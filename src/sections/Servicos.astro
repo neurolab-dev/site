@@ -1,0 +1,51 @@
+---
+/**
+ * Grade de serviços concretos.
+ *
+ * Os pilares dizem que problema resolvemos; esta lista existe para quem chega
+ * procurando pelo nome do serviço ("automação n8n", "tráfego pago") e precisa se
+ * reconhecer na página em dois segundos. Também é a seção que carrega os termos
+ * de busca pelos quais a empresa quer ser encontrada.
+ */
+import Icone from "../components/Icone.astro";
+import { servicos } from "../data/servicos";
+import { pilares } from "../data/pilares";
+
+const nomeDoPilar = Object.fromEntries(pilares.map((p) => [p.id, p.nome]));
+---
+
+<section id="servicos" class="secao bg-fundo-sutil" aria-labelledby="titulo-servicos">
+  <div class="container-conteudo">
+    <div class="max-w-leitura">
+      <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
+        Serviços
+      </p>
+      <h2 id="titulo-servicos" class="titulo-secao font-semibold">
+        O que entregamos na prática
+      </h2>
+      <p class="mt-5 text-body text-texto-secundario">
+        Cada serviço existe para resolver um problema específico — e quase nunca vem
+        sozinho. O diagnóstico define a combinação e a ordem.
+      </p>
+    </div>
+
+    <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        servicos.map((servico) => (
+          <li class="flex h-full flex-col rounded-md border border-borda bg-superficie p-6">
+            <div class="flex items-center gap-3">
+              <Icone nome={servico.icone} tamanho={22} class="shrink-0 text-red-700" />
+              <h3 class="text-h3 font-medium">{servico.nome}</h3>
+            </div>
+            <p class="mt-3 flex-1 text-caption leading-relaxed text-texto-secundario">
+              {servico.descricao}
+            </p>
+            <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-texto-secundario">
+              {nomeDoPilar[servico.pilar]}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

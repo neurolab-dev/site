@@ -1,0 +1,49 @@
+---
+/**
+ * A seção que abre a conversa pela dor.
+ *
+ * Vem antes de qualquer menu de serviço de propósito: o posicionamento da marca
+ * exige o enquadramento "resolvemos um problema de negócio", nunca "vendemos uma
+ * tecnologia". Quem se reconhece aqui chega nos pilares já sabendo o que procura.
+ */
+import Icone from "../components/Icone.astro";
+import { problemas } from "../data/problemas";
+---
+
+<section id="problema" class="secao bg-fundo-sutil" aria-labelledby="titulo-problema">
+  <div class="container-conteudo">
+    <div class="max-w-leitura">
+      <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
+        O ponto de partida
+      </p>
+      <h2 id="titulo-problema" class="titulo-secao font-semibold">
+        Quase sempre, o problema não é falta de ferramenta.
+      </h2>
+      <p class="mt-5 text-body text-texto-secundario">
+        É falta de processo, de integração e de clareza sobre onde o resultado está
+        escapando. Se alguma destas situações parece a da sua empresa, temos por onde começar.
+      </p>
+    </div>
+
+    <ul class="mt-12 grid gap-6 sm:grid-cols-2">
+      {
+        problemas.map((problema) => (
+          <li class="flex gap-4 rounded-md border border-borda bg-superficie p-6">
+            <span
+              class="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-red-50 text-red-700"
+              aria-hidden="true"
+            >
+              <Icone nome={problema.icone} tamanho={22} />
+            </span>
+            <div>
+              <h3 class="text-h3 font-medium">{problema.titulo}</h3>
+              <p class="mt-2 text-caption leading-relaxed text-texto-secundario">
+                {problema.descricao}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

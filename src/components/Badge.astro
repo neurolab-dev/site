@@ -1,0 +1,39 @@
+---
+/**
+ * Badge / tag — 05-componentes-ui.md.
+ *
+ * A variante `marca` é a versão *soft* do vermelho (fundo `red-50`, texto
+ * `red-700`). Nunca preencher badge com `red-600` sólido: preenchimento sólido
+ * de vermelho é reservado ao CTA primário, e um badge sólido roubaria o mesmo
+ * peso visual do botão principal.
+ */
+
+interface Props {
+  variante?: "neutro" | "marca" | "sucesso" | "atencao" | "info" | "inverso";
+  /** Caixa alta — usar para status ("ATIVO", "PENDENTE"), não para rótulo comum. */
+  maiuscula?: boolean;
+  class?: string;
+}
+
+const { variante = "neutro", maiuscula = false, class: classe = "" } = Astro.props;
+
+const variantes = {
+  neutro: "bg-gray-100 text-gray-800",
+  marca: "bg-red-50 text-red-700",
+  sucesso: "bg-success-50 text-success-500",
+  atencao: "bg-warning-50 text-warning-500",
+  info: "bg-info-50 text-info-500",
+  inverso: "bg-gray-0/10 text-gray-0 ring-1 ring-inset ring-gray-0/20",
+} as const;
+---
+
+<span
+  class:list={[
+    "inline-flex items-center gap-1 rounded-sm px-2 py-1 text-xs font-semibold leading-none",
+    variantes[variante],
+    maiuscula && "uppercase tracking-wide",
+    classe,
+  ]}
+>
+  <slot />
+</span>

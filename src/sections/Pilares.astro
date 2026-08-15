@@ -1,0 +1,60 @@
+---
+/**
+ * Os quatro pilares de serviço.
+ *
+ * Cada card abre pela dor e só depois lista a entrega — mesma lógica da seção de
+ * problema. O link de conversa de cada pilar leva uma mensagem própria para o
+ * WhatsApp, o que dá rastreabilidade de qual frente gerou o contato sem depender
+ * de analytics.
+ */
+import Icone from "../components/Icone.astro";
+import { pilares } from "../data/pilares";
+---
+
+<section id="pilares" class="secao bg-fundo" aria-labelledby="titulo-pilares">
+  <div class="container-conteudo">
+    <div class="max-w-leitura">
+      <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
+        O que fazemos
+      </p>
+      <h2 id="titulo-pilares" class="titulo-secao font-semibold">
+        Quatro frentes de inteligência aplicada
+      </h2>
+      <p class="mt-5 text-body text-texto-secundario">
+        Elas se combinam conforme o diagnóstico. Nenhuma empresa precisa das quatro ao
+        mesmo tempo — precisa da que destrava o gargalo atual.
+      </p>
+    </div>
+
+    <ul class="mt-12 grid gap-6 lg:grid-cols-2">
+      {
+        pilares.map((pilar) => (
+          <li
+            id={`pilar-${pilar.id}`}
+            class="flex flex-col rounded-md border border-borda border-l-[3px] border-l-red-600 bg-superficie p-6 md:p-8"
+          >
+            <span
+              class="flex h-12 w-12 items-center justify-center rounded-md bg-red-50 text-red-700"
+              aria-hidden="true"
+            >
+              <Icone nome={pilar.icone} tamanho={24} />
+            </span>
+
+            <h3 class="mt-5 text-h2 font-semibold">{pilar.nome}</h3>
+            <p class="mt-2 text-body font-medium text-marca-texto">{pilar.resumo}</p>
+            <p class="mt-4 text-caption leading-relaxed text-texto-secundario">{pilar.dor}</p>
+
+            <ul class="mt-6 flex flex-col gap-2.5 border-t border-borda pt-6">
+              {pilar.entregas.map((entrega) => (
+                <li class="flex items-start gap-2.5 text-caption">
+                  <Icone nome="check" tamanho={16} class="mt-0.5 shrink-0 text-red-700" />
+                  <span>{entrega}</span>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

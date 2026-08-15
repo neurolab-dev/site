@@ -1,0 +1,67 @@
+name: Deploy do site para o GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Build
+        env:
+          # No GitHub Pages o site é servido a partir de um subcaminho com o nome
+          # do repositório. Trocar para "/" e adicionar public/CNAME quando o
+          # domínio próprio entrar. Ver README.md → Publicação.
+          SITE_BASE: /neurolab-site/
+          SITE_URL: ${{ vars.SITE_URL || 'https://neurolab.com.br' }}
+          # Variáveis opcionais. Cadastre em Settings → Secrets and variables →
+          # Actions → Variables. Vazias, o recurso simplesmente não é ativado.
+          PUBLIC_N8N_WEBHOOK_URL: ${{ vars.PUBLIC_N8N_WEBHOOK_URL }}
+          PUBLIC_GA_ID: ${{ vars.PUBLIC_GA_ID }}
+          PUBLIC_GTM_ID: ${{ vars.PUBLIC_GTM_ID }}
+          PUBLIC_SEARCH_CONSOLE: ${{ vars.PUBLIC_SEARCH_CONSOLE }}
+        # `prebuild` roda o sync-marca sozinho. No CI a pasta do design system
+        # não existe, e o script usa os arquivos de marca já commitados.
+        run: npm run build
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload do artefato de build
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

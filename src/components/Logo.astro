@@ -1,0 +1,94 @@
+---
+/**
+ * A logo da NeuroLab — o único ponto do site que carrega os arquivos da marca.
+ *
+ * Regras de 04-logo-e-elementos-graficos.md aplicadas aqui:
+ *
+ *   - Tamanho mínimo digital: 120px de largura para a logo completa. Abaixo
+ *     disso, só o símbolo da rede neural, sem wordmark. É por isso que existe a
+ *     variante `responsiva`: em telas estreitas não cabe um lockup de 120px ao
+ *     lado do menu, então entra o símbolo isolado — que é exatamente o uso
+ *     previsto pelo design system para espaço reduzido.
+ *   - Área de proteção: espaço livre ao redor equivalente à altura do símbolo.
+ *     Impraticável ao pé da letra dentro de um cabeçalho; aplicamos folga
+ *     proporcional e garantimos que nenhum elemento encoste na arte.
+ *   - Fundo claro usa a versão colorida; fundo grafite usa a versão White.
+ *   - Nada de sombra, contorno, rotação ou distorção.
+ *
+ * Se o wordmark for redesenhado (ver a pendência de licença da fonte em
+ * docs/pendencias.md), este é o único arquivo do site que precisa mudar.
+ */
+import { Image } from "astro:assets";
+import logoCor from "../assets/marca/logo.png";
+import logoBranca from "../assets/marca/logo-branca.png";
+import simbolo from "../assets/marca/icone.png";
+
+interface Props {
+  /** `cor` para fundo claro, `branca` para fundo grafite. */
+  variante?: "cor" | "branca";
+  /**
+   * `responsiva` — símbolo em telas estreitas, lockup completo a partir de `md`.
+   * `completa`   — sempre o lockup (usar só onde couberem 120px de largura).
+   * `simbolo`    — sempre o símbolo isolado.
+   */
+  formato?: "responsiva" | "completa" | "simbolo";
+  /** Largura do lockup completo, em px. Nunca abaixo de 120. */
+  largura?: number;
+  /** Lado do símbolo isolado, em px. */
+  ladoSimbolo?: number;
+  class?: string;
+}
+
+const {
+  variante = "cor",
+  formato = "responsiva",
+  largura = 132,
+  ladoSimbolo = 40,
+  class: classe = "",
+} = Astro.props;
+
+if (largura < 120) {
+  throw new Error(
+    `Logo: largura ${largura}px viola o tamanho mínimo de 120px do design system. ` +
+      `Para espaços menores use formato="simbolo".`
+  );
+}
+
+const arquivo = variante === "branca" ? logoBranca : logoCor;
+const alt = "NeuroLab — Soluções Inteligentes para Negócios";
+
+const mostraSimbolo = formato === "simbolo" || formato === "responsiva";
+const mostraCompleta = formato === "completa" || formato === "responsiva";
+---
+
+{
+  /* As duas versões carregam o mesmo texto alternativo de propósito: em modo
+     responsivo uma delas está sempre em `display:none`, e leitor de tela ignora
+     o que não é exibido. Marcar uma como decorativa deixaria a logo sem nome
+     acessível justamente na largura em que ela é a única visível. */
+}
+{
+  mostraSimbolo && (
+    <Image
+      src={simbolo}
+      alt={alt}
+      width={ladoSimbolo}
+      densities={[1, 2]}
+      loading="eager"
+      class:list={["shrink-0", formato === "responsiva" && "md:hidden", classe]}
+    />
+  )
+}
+
+{
+  mostraCompleta && (
+    <Image
+      src={arquivo}
+      alt={alt}
+      width={largura}
+      densities={[1, 2]}
+      loading="eager"
+      class:list={["shrink-0", formato === "responsiva" && "hidden md:block", classe]}
+    />
+  )
+}

@@ -1,0 +1,177 @@
+---
+/**
+ * Layout base — cabeçalho do documento, SEO e dados estruturados.
+ *
+ * Tudo que é medido pelo Google mora aqui. Como a NeuroLab vende posicionamento
+ * e rastreamento, esta parte não é acessória: é o produto sendo demonstrado.
+ */
+import { seo, ambiente, dadosEstruturados } from "../data/seo";
+import { faq } from "../data/faq";
+import "../styles/global.css";
+
+// O H1 do hero é o elemento de LCP da página, e ele depende desta fonte. Sem o
+// preload, o navegador só descobre o arquivo depois de baixar e interpretar o
+// CSS. O `?url` faz o Vite devolver o caminho final com hash, então o preload
+// aponta exatamente para o arquivo que a folha de estilo vai pedir — e não para
+// uma segunda cópia. Só o subconjunto latino: é o único que o português usa.
+import fonteLatina from "@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url";
+
+interface Props {
+  titulo?: string;
+  descricao?: string;
+}
+
+const { titulo = seo.titulo, descricao = seo.descricao } = Astro.props;
+
+// `Astro.site` vem de SITE_URL em astro.config.mjs. `BASE_URL` é o prefixo de
+// caminho — "/" na Vercel, "/neurolab-site/" no GitHub Pages. Todo caminho de
+// asset passa por aqui; nenhum é escrito cravado no markup.
+const base = import.meta.env.BASE_URL;
+const asset = (caminho: string) => `${base}${caminho}`.replace(/\/{2,}/g, "/");
+
+// `Astro.site` (de SITE_URL) NÃO inclui o prefixo `base` — é a origem pura.
+// `Astro.url.pathname` já vem com o prefixo aplicado (funciona certo para a
+// canônica), mas para montar a URL de uma imagem em public/ é preciso somar
+// origem + base manualmente, senão a URL fica quebrada sempre que `base` não
+// for "/" — o caso do GitHub Pages.
+const site = Astro.site ?? new URL("http://localhost:4321");
+const canonica = new URL(Astro.url.pathname, site).href;
+const imagemOg = new URL(asset(seo.imagemOg), site).href;
+
+const organizacao = dadosEstruturados(new URL(base, site).href, imagemOg);
+
+/** Rich result de FAQ — cada pergunta pode aparecer expandida na busca. */
+const perguntasFrequentes = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faq.map((item) => ({
+    "@type": "Question",
+    name: item.pergunta,
+    acceptedAnswer: { "@type": "Answer", text: item.resposta },
+  })),
+};
+---
+
+<!doctype html>
+<!--
+  data-theme="light" fixa o site no tema claro, independente do modo escuro do
+  sistema operacional do visitante.
+
+  Por quê: tokens.css troca --color-bg/--color-text sozinho via
+  `prefers-color-scheme: dark` (pensado para dashboards/apps internos). Mas
+  cada seção clara desta landing (Problema, Serviços, FAQ, Contato…) foi
+  desenhada assumindo fundo branco — títulos e textos usam cinza-900/800
+  fixo, não o alias semântico. Sob dark automático, só o FUNDO escurecia; o
+  texto continuava escuro por cima dele, e a logo colorida (arte fixa, feita
+  para fundo claro) e o botão secundário do cabeçalho (texto gray-900 sobre
+  fundo agora escuro) ficavam ilegíveis — foi o que apareceu no print.
+
+  Hero, Manifesto e Footer continuam escuros sempre: usam bg-gray-900 (token
+  primitivo) direto, não o alias que troca com o tema.
+
+  Dark mode de verdade — com cada seção revisada e a logo com uma versão
+  White nesse contexto — fica para quando isso for pedido explicitamente.
+-->
+<html lang={seo.idioma} data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{titulo}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonica} />
+
+    <!-- Grafite oficial: pinta a barra do navegador no mobile com a cor da marca. -->
+    <meta name="theme-color" content="#191919" />
+
+    <link rel="preload" as="font" type="font/woff2" href={fonteLatina} crossorigin />
+
+    <link rel="icon" type="image/png" sizes="32x32" href={asset("favicon-32.png")} />
+    <link rel="icon" type="image/png" sizes="192x192" href={asset("favicon-192.png")} />
+    <link rel="apple-touch-icon" href={asset("apple-touch-icon.png")} />
+    <link rel="sitemap" href={asset("sitemap-index.xml")} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="NeuroLab" />
+    <meta property="og:locale" content={seo.locale} />
+    <meta property="og:title" content={seo.tituloOg} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:url" content={canonica} />
+    <meta property="og:image" content={imagemOg} />
+    <meta property="og:image:width" content={String(seo.imagemOgLargura)} />
+    <meta property="og:image:height" content={String(seo.imagemOgAltura)} />
+    <meta property="og:image:alt" content="NeuroLab — Soluções Inteligentes para Negócios" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={seo.tituloOg} />
+    <meta name="twitter:description" content={descricao} />
+    <meta name="twitter:image" content={imagemOg} />
+
+    {
+      /* Verificação do Search Console. Só aparece quando a variável existe —
+         nada de meta tag vazia no HTML. */
+      ambiente.searchConsole && (
+        <meta name="google-site-verification" content={ambiente.searchConsole} />
+      )
+    }
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(organizacao)}
+    />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(perguntasFrequentes)}
+    />
+
+    {
+      /* Analytics e Tag Manager entram apenas se configurados. Sem variável de
+         ambiente, nenhum script de terceiro é servido — o site não carrega
+         rastreador por acidente. Ver .env.example. */
+      ambiente.gtm && (
+        <script
+          is:inline
+          set:html={`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${ambiente.gtm}');`}
+        />
+      )
+    }
+
+    {
+      ambiente.ga && (
+        <>
+          <script
+            is:inline
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${ambiente.ga}`}
+          />
+          <script
+            is:inline
+            set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ambiente.ga}');`}
+          />
+        </>
+      )
+    }
+  </head>
+
+  <body class="bg-fundo text-texto antialiased">
+    {
+      ambiente.gtm && (
+        <noscript
+          set:html={`<iframe src="https://www.googletagmanager.com/ns.html?id=${ambiente.gtm}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`}
+        />
+      )
+    }
+
+    <a
+      href="#conteudo"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-sticky focus:rounded-md focus:bg-red-600 focus:px-4 focus:py-3 focus:text-gray-0 focus:shadow-md"
+    >
+      Pular para o conteúdo
+    </a>
+
+    <slot />
+  </body>
+</html>

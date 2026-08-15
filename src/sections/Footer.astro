@@ -1,0 +1,162 @@
+---
+/**
+ * Rodapé.
+ *
+ * Fundo grafite, então usa a versão White da logo — a única com contraste
+ * garantido sobre escuro, conforme a tabela de fundos permitidos de
+ * 04-logo-e-elementos-graficos.md.
+ *
+ * Os ícones de rede social só existem quando existe perfil. Link social vazio
+ * ou apontando para lugar nenhum é ruído, não presença.
+ */
+import Logo from "../components/Logo.astro";
+import Icone from "../components/Icone.astro";
+import { contato, temEmailReal, linkWhatsapp, mensagens } from "../data/contato";
+import { pilares } from "../data/pilares";
+
+const ano = new Date().getFullYear();
+
+const redes = [
+  { nome: "Instagram", icone: "instagram", href: contato.instagram },
+  { nome: "LinkedIn", icone: "linkedin", href: contato.linkedin },
+].filter((rede) => Boolean(rede.href));
+
+const navegacao = [
+  { href: "#problema", texto: "Desafios" },
+  { href: "#pilares", texto: "O que fazemos" },
+  { href: "#servicos", texto: "Serviços" },
+  { href: "#metodo", texto: "Método" },
+  { href: "#perguntas", texto: "Perguntas frequentes" },
+  { href: "#contato", texto: "Contato" },
+];
+---
+
+<footer class="superficie-escura bg-gray-900 text-gray-300">
+  <div class="container-conteudo py-16 md:py-20">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-20">
+      <div>
+        <Logo variante="branca" formato="completa" largura={168} />
+        <p class="mt-6 max-w-xs text-caption leading-relaxed">
+          {contato.slogan} Um laboratório permanente de soluções inteligentes para
+          negócios.
+        </p>
+
+        {
+          redes.length > 0 && (
+            <ul class="mt-6 flex gap-3">
+              {redes.map((rede) => (
+                <li>
+                  <a
+                    href={rede.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex h-10 w-10 items-center justify-center rounded-md border border-gray-0/20 text-gray-0 transition-colors duration-rapida hover:bg-gray-0/10"
+                    aria-label={`NeuroLab no ${rede.nome}`}
+                  >
+                    <Icone nome={rede.icone} tamanho={20} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+
+      <div class="grid gap-10 sm:grid-cols-3">
+        <nav aria-labelledby="rodape-navegar">
+          <h2 id="rodape-navegar" class="text-caption font-semibold uppercase tracking-wide text-gray-0">
+            Navegar
+          </h2>
+          <ul class="mt-4 flex flex-col gap-2.5">
+            {
+              navegacao.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class="rounded-sm text-caption transition-colors duration-rapida hover:text-gray-0"
+                  >
+                    {item.texto}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        <div>
+          <h2 class="text-caption font-semibold uppercase tracking-wide text-gray-0">
+            Frentes
+          </h2>
+          <ul class="mt-4 flex flex-col gap-2.5">
+            {
+              pilares.map((pilar) => (
+                <li>
+                  <a
+                    href={`#pilar-${pilar.id}`}
+                    class="rounded-sm text-caption transition-colors duration-rapida hover:text-gray-0"
+                  >
+                    {pilar.nome}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-caption font-semibold uppercase tracking-wide text-gray-0">
+            Contato
+          </h2>
+          <ul class="mt-4 flex flex-col gap-2.5 text-caption">
+            <li>
+              <a
+                href={linkWhatsapp(mensagens.geral)}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2 rounded-sm transition-colors duration-rapida hover:text-gray-0"
+              >
+                <Icone nome="whatsapp" tamanho={16} class="shrink-0" />
+                {contato.whatsappExibicao}
+              </a>
+            </li>
+            {
+              temEmailReal && (
+                <li>
+                  <a
+                    href={`mailto:${contato.email}`}
+                    class="flex items-center gap-2 rounded-sm transition-colors duration-rapida hover:text-gray-0"
+                  >
+                    <Icone nome="email" tamanho={16} class="shrink-0" />
+                    {contato.email}
+                  </a>
+                </li>
+              )
+            }
+            <li>
+              <a
+                href={contato.agenda}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2 rounded-sm transition-colors duration-rapida hover:text-gray-0"
+              >
+                <Icone nome="calendario" tamanho={16} class="shrink-0" />
+                Agendar diagnóstico
+              </a>
+            </li>
+            <li class="flex items-center gap-2">
+              <Icone nome="local" tamanho={16} class="shrink-0" />
+              {contato.cidade}/{contato.estado}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col gap-3 border-t border-gray-0/15 pt-8 text-caption sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {ano} NeuroLab — {contato.assinatura}</p>
+      <p>CNPJ {contato.cnpj}</p>
+    </div>
+  </div>
+</footer>

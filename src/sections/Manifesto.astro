@@ -1,0 +1,64 @@
+---
+/**
+ * O manifesto da marca, em bloco de alto contraste.
+ *
+ * Texto oficial de 01-fundamentos-de-marca.md — não parafrasear. A frase
+ * "Não vendemos ferramentas. Entregamos soluções." é a linha que separa a
+ * NeuroLab de uma agência tradicional, e é por isso que ela tem o maior peso
+ * tipográfico da seção.
+ */
+import RedeNeural from "../components/RedeNeural.astro";
+
+const valores = [
+  "Inteligência aplicada",
+  "Inovação contínua",
+  "Simplicidade",
+  "Eficiência",
+  "Transparência",
+  "Foco em resultados",
+  "Evolução constante",
+];
+---
+
+<section
+  id="manifesto"
+  class="superficie-escura secao relative isolate overflow-hidden bg-gray-900 text-gray-0"
+  aria-labelledby="titulo-manifesto"
+>
+  <RedeNeural opacidade={0.07} semente={23} class="absolute inset-0 h-full w-full text-red-400" />
+
+  <div class="container-conteudo relative">
+    <div class="max-w-leitura">
+      <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-red-400">
+        No que acreditamos
+      </p>
+
+      <h2 id="titulo-manifesto" class="titulo-secao font-semibold text-gray-0">
+        Toda empresa pode ser mais eficiente, mais lucrativa e mais inteligente.
+      </h2>
+
+      <p class="mt-6 text-body leading-relaxed text-gray-300">
+        Por isso criamos a NeuroLab: um laboratório permanente de soluções inteligentes
+        para negócios. Combinamos tecnologia, automações, inteligência artificial,
+        marketing e estratégia para transformar desafios em oportunidades de crescimento.
+      </p>
+
+      <p class="mt-8 border-l-[3px] border-l-red-600 pl-6 text-h1 font-bold leading-tight text-gray-0">
+        Não vendemos ferramentas.<br />Entregamos soluções.
+      </p>
+
+      <p class="mt-8 text-body leading-relaxed text-gray-300">
+        Não importa se você é um pequeno negócio local ou uma empresa em expansão. O
+        objetivo é o mesmo: fazer sua empresa trabalhar de forma mais inteligente.
+      </p>
+    </div>
+
+    <ul class="mt-12 flex flex-wrap gap-x-6 gap-y-3 border-t border-gray-0/15 pt-8">
+      {
+        valores.map((valor) => (
+          <li class="text-caption font-medium text-gray-300">{valor}</li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

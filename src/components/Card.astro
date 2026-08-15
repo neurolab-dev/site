@@ -1,0 +1,43 @@
+---
+/**
+ * Card — variantes de 05-componentes-ui.md.
+ *
+ * As cores usam os aliases semânticos (`superficie`, `borda`, `texto`), não os
+ * primitivos: é isso que faz o card acompanhar sozinho o tema claro/escuro
+ * definido em tokens.css. A exceção é `escuro`, que é grafite por decisão de
+ * composição e permanece grafite nos dois temas.
+ */
+
+interface Props {
+  variante?: "padrao" | "acento-esquerda" | "kpi" | "escuro";
+  /** Ativa a elevação em hover. Só usar quando o card inteiro for clicável. */
+  interativo?: boolean;
+  /** Renderiza como <li> — para cards dentro de listas. */
+  como?: "div" | "li" | "article";
+  class?: string;
+}
+
+const {
+  variante = "padrao",
+  interativo = false,
+  como: Tag = "div",
+  class: classe = "",
+} = Astro.props;
+
+const base = "rounded-md";
+
+const variantes = {
+  padrao: "bg-superficie border border-borda p-6",
+  "acento-esquerda": "bg-superficie border border-borda border-l-[3px] border-l-red-600 p-6",
+  kpi: "bg-superficie border border-borda border-t-[2.5px] border-t-red-600 p-6 text-center",
+  escuro: "superficie-escura bg-gray-900 border-l-[3px] border-l-red-600 text-gray-0 p-6",
+} as const;
+
+const hover = interativo
+  ? "shadow-sm hover:shadow-md transition-shadow duration-rapida"
+  : "";
+---
+
+<Tag class:list={[base, variantes[variante], hover, classe]}>
+  <slot />
+</Tag>

@@ -1,0 +1,95 @@
+---
+/**
+ * Cases e depoimentos.
+ *
+ * A seção está pronta e ligada, mas só é renderizada quando existe conteúdo em
+ * src/data/cases.ts. Com o array vazio, o HTML gerado não contém nada disto —
+ * sem espaço em branco e sem "em breve", que só denunciam que a empresa ainda
+ * não tem o que mostrar.
+ *
+ * O link "Cases" do menu segue a mesma condição, em Header.astro.
+ */
+import Badge from "../components/Badge.astro";
+import { cases } from "../data/cases";
+
+const base = import.meta.env.BASE_URL;
+
+/** Resolve o caminho da imagem respeitando o prefixo da hospedagem. */
+const asset = (caminho: string) => `${base}${caminho}`.replace(/\/{2,}/g, "/");
+---
+
+{
+  cases.length > 0 && (
+    <section id="cases" class="secao bg-fundo-sutil" aria-labelledby="titulo-cases">
+      <div class="container-conteudo">
+        <div class="max-w-leitura">
+          <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
+            Resultados
+          </p>
+          <h2 id="titulo-cases" class="titulo-secao font-semibold">
+            O que mudou na prática
+          </h2>
+          <p class="mt-5 text-body text-texto-secundario">
+            Cada projeto começa por um problema de negócio e termina em um número.
+          </p>
+        </div>
+
+        <ul class="mt-12 grid gap-6 lg:grid-cols-2">
+          {cases.map((item) => (
+            <li class="flex flex-col overflow-hidden rounded-md border border-borda bg-superficie">
+              {item.imagem && (
+                <img
+                  src={asset(item.imagem)}
+                  alt={`Solução entregue para ${item.cliente}`}
+                  loading="lazy"
+                  decoding="async"
+                  class="aspect-[16/9] w-full object-cover"
+                />
+              )}
+
+              <div class="flex flex-1 flex-col p-6 md:p-8">
+                <Badge variante="marca">{item.segmento}</Badge>
+                <h3 class="mt-4 text-h2 font-semibold">{item.cliente}</h3>
+
+                <dl class="mt-5 flex flex-col gap-4 text-caption leading-relaxed">
+                  <div>
+                    <dt class="font-semibold uppercase tracking-wide text-texto-secundario">
+                      Desafio
+                    </dt>
+                    <dd class="mt-1">{item.desafio}</dd>
+                  </div>
+                  <div>
+                    <dt class="font-semibold uppercase tracking-wide text-texto-secundario">
+                      Solução
+                    </dt>
+                    <dd class="mt-1">{item.solucao}</dd>
+                  </div>
+                </dl>
+
+                <p class="mt-6 border-l-[3px] border-l-red-600 bg-red-50 px-5 py-4 text-body font-semibold text-red-700">
+                  {item.resultado}
+                </p>
+
+                {item.depoimento && (
+                  <figure class="mt-6 border-t border-borda pt-6">
+                    <blockquote class="text-caption italic leading-relaxed text-texto-secundario">
+                      “{item.depoimento}”
+                    </blockquote>
+                    {item.autor && (
+                      <figcaption class="mt-3 text-caption font-semibold">
+                        {item.autor}
+                        {item.cargo && (
+                          <span class="font-regular text-texto-secundario"> · {item.cargo}</span>
+                        )}
+                      </figcaption>
+                    )}
+                  </figure>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

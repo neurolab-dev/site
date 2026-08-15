@@ -1,0 +1,128 @@
+---
+/**
+ * Cabeçalho fixo.
+ *
+ * O CTA daqui é `secundario` de propósito. O design system manda ter uma única
+ * ação primária por tela, e na primeira dobra o primário é o do hero — dois
+ * botões vermelhos sólidos ao mesmo tempo quebrariam a regra 70-20-10 e
+ * disputariam a atenção entre si.
+ *
+ * O menu de telas estreitas é o único ponto do site com JavaScript de interface:
+ * ~20 linhas, sem biblioteca.
+ */
+import Logo from "../components/Logo.astro";
+import Botao from "../components/Botao.astro";
+import Icone from "../components/Icone.astro";
+import { linkWhatsapp, mensagens } from "../data/contato";
+import { cases } from "../data/cases";
+
+const links = [
+  { href: "#problema", texto: "Desafios" },
+  { href: "#pilares", texto: "O que fazemos" },
+  { href: "#servicos", texto: "Serviços" },
+  { href: "#metodo", texto: "Método" },
+  // O link só existe quando existe conteúdo. Ver src/data/cases.ts.
+  ...(cases.length ? [{ href: "#cases", texto: "Cases" }] : []),
+  { href: "#perguntas", texto: "Perguntas" },
+];
+---
+
+<header
+  class="sticky top-0 z-sticky border-b border-borda bg-fundo/95 backdrop-blur supports-[backdrop-filter]:bg-fundo/80"
+>
+  <div class="container-conteudo flex h-16 items-center justify-between gap-6 md:h-24">
+    <a href="#inicio" class="flex items-center rounded-md" aria-label="NeuroLab — início">
+      <Logo formato="responsiva" largura={132} ladoSimbolo={36} />
+    </a>
+
+    <nav aria-label="Navegação principal" class="hidden lg:block">
+      <ul class="flex items-center gap-8">
+        {
+          links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="rounded-sm text-sm font-medium text-texto-secundario transition-colors duration-rapida hover:text-texto"
+              >
+                {link.texto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <Botao
+        href={linkWhatsapp(mensagens.geral)}
+        variante="secundario"
+        tamanho="md"
+        iconeInicio="whatsapp"
+        externo
+        class="hidden sm:inline-flex"
+      >
+        Falar com a NeuroLab
+      </Botao>
+
+      <button
+        type="button"
+        id="abrir-menu"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-md text-texto transition-colors duration-rapida hover:bg-gray-100 lg:hidden"
+        aria-expanded="false"
+        aria-controls="menu-mobile"
+        aria-label="Abrir menu"
+      >
+        <Icone nome="menu" tamanho={24} />
+      </button>
+    </div>
+  </div>
+
+  <div id="menu-mobile" hidden class="border-t border-borda bg-fundo lg:hidden">
+    <nav aria-label="Navegação principal (telas estreitas)" class="container-conteudo py-4">
+      <ul class="flex flex-col">
+        {
+          [...links, { href: "#contato", texto: "Contato" }].map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="block rounded-md px-2 py-3 text-body font-medium text-texto transition-colors duration-rapida hover:bg-gray-100"
+              >
+                {link.texto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const botao = document.getElementById("abrir-menu");
+  const menu = document.getElementById("menu-mobile");
+
+  if (botao && menu) {
+    const definir = (aberto: boolean) => {
+      menu.hidden = !aberto;
+      botao.setAttribute("aria-expanded", String(aberto));
+      botao.setAttribute("aria-label", aberto ? "Fechar menu" : "Abrir menu");
+    };
+
+    botao.addEventListener("click", () => {
+      definir(menu.hidden);
+    });
+
+    // Numa página de âncoras o clique não recarrega nada: sem isto o menu
+    // ficaria aberto por cima do conteúdo para onde o visitante acabou de ir.
+    menu.addEventListener("click", (evento) => {
+      if ((evento.target as HTMLElement).closest("a")) definir(false);
+    });
+
+    document.addEventListener("keydown", (evento) => {
+      if (evento.key === "Escape" && !menu.hidden) {
+        definir(false);
+        botao.focus();
+      }
+    });
+  }
+</script>

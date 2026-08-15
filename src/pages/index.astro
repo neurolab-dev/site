@@ -1,0 +1,42 @@
+---
+/**
+ * A landing inteira.
+ *
+ * A ordem das seções é o argumento comercial: primeiro o problema que o
+ * visitante reconhece, depois as frentes que o resolvem, os serviços concretos,
+ * como trabalhamos, no que acreditamos, prova, dúvidas e só então a conversa.
+ * Pedir o contato antes de sustentar o valor inverte essa lógica.
+ */
+import Base from "../layouts/Base.astro";
+import Header from "../sections/Header.astro";
+import Hero from "../sections/Hero.astro";
+import Problema from "../sections/Problema.astro";
+import Pilares from "../sections/Pilares.astro";
+import Servicos from "../sections/Servicos.astro";
+import Metodo from "../sections/Metodo.astro";
+import Manifesto from "../sections/Manifesto.astro";
+import Cases from "../sections/Cases.astro";
+import Faq from "../sections/Faq.astro";
+import Contato from "../sections/Contato.astro";
+import Footer from "../sections/Footer.astro";
+import WhatsappFlutuante from "../components/WhatsappFlutuante.astro";
+---
+
+<Base>
+  <Header />
+
+  <main id="conteudo">
+    <Hero />
+    <Problema />
+    <Pilares />
+    <Servicos />
+    <Metodo />
+    <Manifesto />
+    <Cases />
+    <Faq />
+    <Contato />
+  </main>
+
+  <Footer />
+  <WhatsappFlutuante />
+</Base>

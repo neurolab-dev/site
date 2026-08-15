@@ -1,0 +1,45 @@
+---
+/**
+ * O método, nos quatro verbos da proposta de valor da marca.
+ *
+ * É o que sustenta o posicionamento de laboratório em vez de agência: existe um
+ * processo, e ele começa por estudar o negócio — não por vender uma ferramenta.
+ */
+import { metodo } from "../data/metodo";
+---
+
+<section id="metodo" class="secao bg-fundo" aria-labelledby="titulo-metodo">
+  <div class="container-conteudo">
+    <div class="max-w-leitura">
+      <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
+        Como trabalhamos
+      </p>
+      <h2 id="titulo-metodo" class="titulo-secao font-semibold">
+        Estudamos, criamos, testamos e implementamos
+      </h2>
+      <p class="mt-5 text-body text-texto-secundario">
+        Nessa ordem, sempre. É o que separa uma solução que resolve de uma ferramenta
+        que vira mais um custo mensal.
+      </p>
+    </div>
+
+    <ol class="mt-12 grid gap-px overflow-hidden rounded-md bg-borda md:grid-cols-2 lg:grid-cols-4">
+      {
+        metodo.map((etapa) => (
+          <li class="flex flex-col bg-superficie p-6 md:p-8">
+            <span class="text-h1 font-bold leading-none text-red-600/25" aria-hidden="true">
+              {etapa.numero}
+            </span>
+            <h3 class="mt-5 text-h2 font-semibold">{etapa.verbo}</h3>
+            <p class="mt-1 text-caption font-semibold uppercase tracking-wide text-marca-texto">
+              {etapa.titulo}
+            </p>
+            <p class="mt-4 text-caption leading-relaxed text-texto-secundario">
+              {etapa.descricao}
+            </p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

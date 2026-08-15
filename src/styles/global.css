@@ -1,0 +1,120 @@
+/* Montserrat — auto-hospedada. Sem requisição a servidor do Google: melhor LCP
+   e nenhuma dependência externa em runtime. Ver 03-tipografia.md. */
+@import "@fontsource-variable/montserrat";
+
+/* Tokens do design system. Sincronizados por scripts/sync-marca.mjs —
+   não editar em src/tokens/. */
+@import "../tokens/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* O header é fixo; sem isso a âncora para no meio do título. */
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: theme("fontFamily.sans");
+    font-size: var(--text-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Escala tipográfica de 03-tipografia.md. Peso por passo:
+     h1 Bold 700 · h2 SemiBold 600 · h3 Medium 500. */
+  h1,
+  h2,
+  h3 {
+    color: var(--gray-900);
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Foco visível em tudo que é operável por teclado. 05-componentes-ui.md é
+     explícito: não remover o outline sem substituir. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Sobre fundo escuro o anel vermelho some — inverte para branco. */
+  .superficie-escura :focus-visible {
+    outline-color: var(--gray-0);
+  }
+
+  ::selection {
+    background-color: var(--red-100);
+    color: var(--red-900);
+  }
+}
+
+@layer components {
+  /* Largura de leitura e respiro lateral, iguais em todas as seções. */
+  .container-conteudo {
+    width: 100%;
+    max-width: theme("maxWidth.conteudo");
+    margin-inline: auto;
+    padding-inline: theme("spacing.6");
+  }
+
+  @media (min-width: 1024px) {
+    .container-conteudo {
+      padding-inline: theme("spacing.10");
+    }
+  }
+
+  /* 03-tipografia.md, referência oficial do guia de marca: o H1 de um site fica
+     entre 48px e 64px. O token `display` (3rem = 48px) é o piso do intervalo, e
+     64px o teto — a interpolação por viewport apenas percorre essa faixa, sem
+     inventar um tamanho fora dela. */
+  .titulo-hero {
+    font-size: clamp(var(--text-display), 5.2vw, 4rem);
+  }
+
+  /* Título de seção. A escala do design system fixa h2 em 24px, calibrado para
+     título dentro de documento; numa landing, cada seção é uma tela inteira e o
+     h2 precisa abrir o bloco. Sobe até 36px, que é o passo `h1` do próprio
+     sistema — degrau existente, não valor novo. */
+  .titulo-secao {
+    font-size: clamp(var(--text-h2), 3.4vw, var(--text-h1));
+  }
+
+  /* Espaçamento vertical entre blocos de landing page — space-16/space-24 de
+     05-componentes-ui.md. */
+  .secao {
+    padding-block: theme("spacing.16");
+  }
+
+  @media (min-width: 768px) {
+    .secao {
+      padding-block: theme("spacing.24");
+    }
+  }
+}
+
+/* Respeita quem pediu menos movimento no sistema operacional. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

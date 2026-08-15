@@ -1,0 +1,73 @@
+---
+/**
+ * Primeira dobra.
+ *
+ * Fundo grafite com a textura de rede neural a 8% — dentro da faixa de 5–15%
+ * exigida pelo design system. Um único CTA primário; o segundo caminho é
+ * secundário invertido, para não haver dois vermelhos sólidos disputando a
+ * mesma tela.
+ */
+import Botao from "../components/Botao.astro";
+import Icone from "../components/Icone.astro";
+import RedeNeural from "../components/RedeNeural.astro";
+import { contato, linkWhatsapp, mensagens } from "../data/contato";
+
+const provas = [
+  { icone: "check", texto: "Diagnóstico gratuito" },
+  { icone: "local", texto: `${contato.cidade}/${contato.estado} · atendimento em todo o Brasil` },
+];
+---
+
+<section
+  id="inicio"
+  class="superficie-escura relative isolate overflow-hidden bg-gray-900 text-gray-0"
+  aria-labelledby="titulo-hero"
+>
+  <RedeNeural opacidade={0.08} semente={11} class="absolute inset-0 h-full w-full text-red-400" />
+
+  <div class="container-conteudo relative py-20 md:py-28 lg:py-32">
+    <div class="max-w-3xl">
+      <p class="mb-6 flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.18em] text-red-400">
+        <span aria-hidden="true" class="inline-block h-px w-8 bg-red-400"></span>
+        Soluções para negócios
+      </p>
+
+      <h1 id="titulo-hero" class="titulo-hero font-bold text-gray-0">
+        Transformamos inteligência em resultados.
+      </h1>
+
+      <p class="mt-6 max-w-leitura text-body text-gray-300 md:text-[1.125rem]">
+        Estudamos, criamos, testamos e implementamos soluções inteligentes para negócios —
+        através de tecnologia, automação e estratégia. Não vendemos ferramentas:
+        resolvemos o problema que está travando o seu resultado.
+      </p>
+
+      <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <Botao
+          href={linkWhatsapp(mensagens.hero)}
+          variante="primario"
+          tamanho="lg"
+          iconeInicio="whatsapp"
+          externo
+        >
+          Quero um diagnóstico
+        </Botao>
+
+        <Botao href="#pilares" variante="secundario-inverso" tamanho="lg" icone="seta-baixo">
+          Nossas soluções
+        </Botao>
+      </div>
+
+      <ul class="mt-10 flex flex-col gap-3 text-caption text-gray-300 sm:flex-row sm:gap-8">
+        {
+          provas.map((prova) => (
+            <li class="flex items-center gap-2">
+              <Icone nome={prova.icone} tamanho={16} class="shrink-0 text-red-400" />
+              {prova.texto}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

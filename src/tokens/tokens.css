@@ -1,0 +1,167 @@
+/* GERADO POR scripts/sync-marca.mjs — NÃO EDITAR AQUI
+   Fonte da verdade: 0. BrandOS/0. DesignSystem/tokens/tokens.css */
+
+/* ===========================================================
+   NeuroLab — Design Tokens v1.0
+   Fonte única da verdade. Nomes harmonizados com
+   ../../1. Propostas/templates/proposta.css (mesmos valores,
+   escala expandida). Ver ../02-cores.md e ../05-componentes-ui.md
+   para o racional de cada token.
+   =========================================================== */
+
+:root {
+  /* ---------- Cor de marca — Vermelho Neuro ---------- */
+  --red-50:  #FFF5F5;
+  --red-100: #FFE1E2;
+  --red-200: #FFC2C4;
+  --red-300: #FF9498;
+  --red-400: #FF4D4F;
+  --red-600: #F50A11; /* HEX oficial da marca — não alterar */
+  --red-700: #DA0A11; /* variante segura para texto (contraste ~4.5:1 sobre branco) */
+  --red-800: #B50911;
+  --red-900: #7A060B;
+
+  /* ---------- Grafite / Cinza ---------- */
+  --gray-0:   #FFFFFF;
+  --gray-50:  #F7F8F7;
+  --gray-100: #F0F1F0;
+  --gray-200: #E6E8E6; /* Cinza Claro oficial */
+  --gray-300: #CED0CE; /* Cinza Médio oficial */
+  --gray-400: #A9ACA9;
+  --gray-500: #7A7A7A;
+  --gray-600: #595959;
+  --gray-700: #404040;
+  --gray-800: #2C2C2C;
+  --gray-900: #191919; /* Grafite oficial */
+
+  /* ---------- Semânticas ---------- */
+  --success-500:  #16A34A;
+  --success-50:   #F0FDF4;
+  --success-200:  #BBF7D0;
+
+  --warning-500:  #D97706;
+  --warning-50:   #FFFBEB;
+  --warning-200:  #FDE68A;
+
+  --info-500:     #2563EB;
+  --info-50:      #EFF6FF;
+  --info-200:     #BFDBFE;
+
+  /* Erro reaproveita a rampa de vermelho (ver 02-cores.md) */
+  --danger-500:   var(--red-700);
+  --danger-50:    var(--red-50);
+  --danger-200:   var(--red-200);
+
+  /* ---------- Aliases semânticos (uso direto em componentes) ---------- */
+  --color-bg:            var(--gray-0);
+  --color-bg-subtle:     var(--gray-50);
+  --color-surface:       var(--gray-0);
+  --color-border:        var(--gray-200);
+  --color-border-strong: var(--gray-300);
+  --color-text:          var(--gray-800);
+  --color-text-secondary: var(--gray-500);
+  --color-text-inverse:  var(--gray-0);
+  --color-brand:         var(--red-600);
+  --color-brand-hover:   var(--red-800);
+  --color-brand-active:  var(--red-900);
+  --color-brand-text:    var(--red-700);
+
+  /* ---------- Tipografia ---------- */
+  --font-institucional: 'Montserrat', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  /* Fonte do logotipo — uso exclusivo em artwork da marca, NUNCA em UI.
+     Ver 03-tipografia.md: licença atual (Sergio Trendy) é apenas pessoal. */
+  --font-logo: 'Sergio Trendy', serif;
+
+  --text-display: 3rem;
+  --text-h1:      2.25rem;
+  --text-h2:      1.5rem;
+  --text-h3:      1.125rem;
+  --text-body:    1rem;
+  --text-caption: 0.8125rem;
+
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* ---------- Espaçamento (base 4px) ---------- */
+  --space-1:  0.25rem; /* 4px */
+  --space-2:  0.5rem;  /* 8px */
+  --space-3:  0.75rem; /* 12px */
+  --space-4:  1rem;    /* 16px */
+  --space-5:  1.25rem; /* 20px */
+  --space-6:  1.5rem;  /* 24px */
+  --space-8:  2rem;    /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+  --space-20: 5rem;    /* 80px */
+  --space-24: 6rem;    /* 96px */
+
+  /* ---------- Raio de borda ---------- */
+  --radius-sm:   4px;
+  --radius-md:   6px;
+  --radius-lg:   10px;
+  --radius-xl:   16px;
+  --radius-full: 999px;
+
+  /* ---------- Elevação ---------- */
+  --shadow-sm: 0 1px 2px rgba(25, 25, 25, 0.06);
+  --shadow-md: 0 4px 12px rgba(25, 25, 25, 0.10);
+  --shadow-lg: 0 12px 32px rgba(25, 25, 25, 0.16);
+
+  /* ---------- Foco (acessibilidade) ---------- */
+  --focus-ring: 0 0 0 3px rgba(245, 10, 17, 0.35);
+  --focus-ring-inverse: 0 0 0 3px rgba(255, 255, 255, 0.5);
+
+  /* ---------- Z-index ---------- */
+  --z-dropdown: 1000;
+  --z-sticky:   1100;
+  --z-modal-backdrop: 1200;
+  --z-modal:    1300;
+  --z-toast:    1400;
+}
+
+/* ---------- Modo escuro ---------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:            var(--gray-900);
+    --color-bg-subtle:     var(--gray-800);
+    --color-surface:       var(--gray-800);
+    --color-border:        rgba(255, 255, 255, 0.12);
+    --color-border-strong: rgba(255, 255, 255, 0.2);
+    --color-text:          var(--gray-0);
+    --color-text-secondary: var(--gray-300);
+    --color-brand:         var(--red-400);
+    --color-brand-hover:   var(--red-300);
+    --color-brand-active:  var(--red-200);
+  }
+}
+
+/* Overrides explícitos quando a página tem um toggle de tema próprio */
+:root[data-theme="dark"] {
+  --color-bg:            var(--gray-900);
+  --color-bg-subtle:     var(--gray-800);
+  --color-surface:       var(--gray-800);
+  --color-border:        rgba(255, 255, 255, 0.12);
+  --color-border-strong: rgba(255, 255, 255, 0.2);
+  --color-text:          var(--gray-0);
+  --color-text-secondary: var(--gray-300);
+  --color-brand:         var(--red-400);
+  --color-brand-hover:   var(--red-300);
+  --color-brand-active:  var(--red-200);
+}
+
+:root[data-theme="light"] {
+  --color-bg:            var(--gray-0);
+  --color-bg-subtle:     var(--gray-50);
+  --color-surface:       var(--gray-0);
+  --color-border:        var(--gray-200);
+  --color-border-strong: var(--gray-300);
+  --color-text:          var(--gray-800);
+  --color-text-secondary: var(--gray-500);
+  --color-brand:         var(--red-600);
+  --color-brand-hover:   var(--red-800);
+  --color-brand-active:  var(--red-900);
+}

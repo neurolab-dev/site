@@ -1,0 +1,372 @@
+---
+/**
+ * Conversão — três caminhos, um bloco.
+ *
+ * WhatsApp e agenda resolvem quem já decidiu falar. O formulário existe para
+ * quem prefere escrever, e para gerar um registro estruturado do lead.
+ *
+ * O envio vai para um webhook do n8n, definido em PUBLIC_N8N_WEBHOOK_URL. Sem
+ * essa variável o formulário não é renderizado: no lugar dele entra um aviso e o
+ * caminho do WhatsApp. Um formulário bonito que engole leads em silêncio é pior
+ * que nenhum formulário.
+ *
+ * Estados de erro seguem o padrão *soft* de 02-cores.md (fundo `red-50`, texto
+ * `red-700`). Vermelho sólido aqui é exclusividade do botão de envio.
+ */
+import Botao from "../components/Botao.astro";
+import Icone from "../components/Icone.astro";
+import { contato, temEmailReal, linkWhatsapp, mensagens } from "../data/contato";
+import { ambiente } from "../data/seo";
+import { pilares } from "../data/pilares";
+
+const temWebhook = Boolean(ambiente.webhook);
+
+const canais = [
+  {
+    icone: "whatsapp",
+    titulo: "WhatsApp",
+    descricao: "O caminho mais rápido. Respondemos em horário comercial.",
+    valor: contato.whatsappExibicao,
+    href: linkWhatsapp(mensagens.geral),
+    externo: true,
+  },
+  {
+    icone: "calendario",
+    titulo: "Agendar diagnóstico",
+    descricao: "Escolha um horário na agenda e receba o convite por e-mail.",
+    valor: "Ver horários disponíveis",
+    href: contato.agenda,
+    externo: true,
+  },
+  ...(temEmailReal
+    ? [
+        {
+          icone: "email",
+          titulo: "E-mail",
+          descricao: "Para propostas, documentos e assuntos formais.",
+          valor: contato.email,
+          href: `mailto:${contato.email}`,
+          externo: false,
+        },
+      ]
+    : []),
+];
+
+const campoBase =
+  "w-full rounded-md border border-gray-300 bg-gray-0 px-3 text-body text-gray-800 " +
+  "transition-colors duration-rapida placeholder:text-gray-500 " +
+  "focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-600/35 " +
+  "aria-[invalid=true]:border-red-700 aria-[invalid=true]:bg-red-50";
+const rotuloBase = "block text-caption font-semibold text-gray-800";
+---
+
+<section id="contato" class="secao bg-fundo-sutil" aria-labelledby="titulo-contato">
+  <div class="container-conteudo">
+    <div class="max-w-leitura">
+      <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
+        Vamos conversar
+      </p>
+      <h2 id="titulo-contato" class="titulo-secao font-semibold">
+        Comece pelo diagnóstico
+      </h2>
+      <p class="mt-5 text-body text-texto-secundario">
+        Uma conversa sobre o processo da sua empresa, onde o resultado está travando e o
+        que dá para destravar primeiro. Sem custo e sem compromisso.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-12">
+      <!-- Formulário -->
+      <div class="rounded-md border border-borda bg-superficie p-6 md:p-8">
+        {
+          temWebhook ? (
+            <form id="form-diagnostico" novalidate class="flex flex-col gap-5">
+              <h3 class="text-h2 font-semibold">Conte o seu desafio</h3>
+
+              <div class="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label for="campo-nome" class={rotuloBase}>
+                    Nome <span class="text-red-700">*</span>
+                  </label>
+                  <input
+                    id="campo-nome"
+                    name="nome"
+                    type="text"
+                    required
+                    autocomplete="name"
+                    class:list={[campoBase, "mt-2 h-10"]}
+                  />
+                </div>
+
+                <div>
+                  <label for="campo-empresa" class={rotuloBase}>
+                    Empresa
+                  </label>
+                  <input
+                    id="campo-empresa"
+                    name="empresa"
+                    type="text"
+                    autocomplete="organization"
+                    class:list={[campoBase, "mt-2 h-10"]}
+                  />
+                </div>
+
+                <div>
+                  <label for="campo-whatsapp" class={rotuloBase}>
+                    WhatsApp <span class="text-red-700">*</span>
+                  </label>
+                  <input
+                    id="campo-whatsapp"
+                    name="whatsapp"
+                    type="tel"
+                    required
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="(00) 00000-0000"
+                    class:list={[campoBase, "mt-2 h-10"]}
+                  />
+                </div>
+
+                <div>
+                  <label for="campo-email" class={rotuloBase}>
+                    E-mail
+                  </label>
+                  <input
+                    id="campo-email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    class:list={[campoBase, "mt-2 h-10"]}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label for="campo-desafio" class={rotuloBase}>
+                  Principal desafio <span class="text-red-700">*</span>
+                </label>
+                <select
+                  id="campo-desafio"
+                  name="desafio"
+                  required
+                  class:list={[campoBase, "mt-2 h-10"]}
+                >
+                  <option value="">Selecione</option>
+                  {pilares.map((pilar) => (
+                    <option value={pilar.nome}>{pilar.resumo}</option>
+                  ))}
+                  <option value="Ainda não sei">Ainda não sei — quero ajuda para identificar</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="campo-mensagem" class={rotuloBase}>
+                  Conte um pouco mais
+                </label>
+                <textarea
+                  id="campo-mensagem"
+                  name="mensagem"
+                  rows="4"
+                  class:list={[campoBase, "mt-2 py-2.5"]}
+                />
+              </div>
+
+              {/* Honeypot: invisível para pessoas, preenchido por robô. */}
+              <div class="absolute -left-[9999px]" aria-hidden="true">
+                <label for="campo-site">Não preencha este campo</label>
+                <input id="campo-site" name="site" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+
+              <p
+                id="form-erro"
+                hidden
+                role="alert"
+                class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-caption text-red-700"
+              />
+
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Botao type="submit" variante="primario" tamanho="lg" id="form-enviar">
+                  Enviar e receber contato
+                </Botao>
+                <p class="text-caption text-texto-secundario">
+                  Seus dados são usados apenas para este contato.
+                </p>
+              </div>
+
+              <noscript>
+                <p class="rounded-md border border-warning-200 bg-warning-50 px-4 py-3 text-caption text-gray-800">
+                  O envio do formulário precisa de JavaScript. Se preferir, fale direto
+                  pelo WhatsApp {contato.whatsappExibicao}.
+                </p>
+              </noscript>
+            </form>
+          ) : (
+            <div class="flex flex-col gap-5">
+              <h3 class="text-h2 font-semibold">Conte o seu desafio</h3>
+              <p
+                role="status"
+                class="rounded-md border border-warning-200 bg-warning-50 px-4 py-3 text-caption text-gray-800"
+              >
+                O formulário ainda não está conectado ao destino que recebe os contatos.
+                Enquanto isso, o WhatsApp é o caminho — e é respondido pela mesma pessoa.
+              </p>
+              <Botao
+                href={linkWhatsapp(mensagens.geral)}
+                variante="primario"
+                tamanho="lg"
+                iconeInicio="whatsapp"
+                externo
+                class="self-start"
+              >
+                Falar no WhatsApp
+              </Botao>
+            </div>
+          )
+        }
+
+        {/* Confirmação de envio, revelada pelo script. */}
+        <div id="form-sucesso" hidden class="flex flex-col items-start gap-4 text-center sm:text-left">
+          <span
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-success-50 text-success-500"
+            aria-hidden="true"
+          >
+            <Icone nome="check" tamanho={24} />
+          </span>
+          <h3 class="text-h2 font-semibold">Recebemos o seu contato</h3>
+          <p class="text-body text-texto-secundario">
+            Respondemos em horário comercial. Se preferir adiantar a conversa, chame no
+            WhatsApp — é o mesmo time do outro lado.
+          </p>
+          <Botao
+            href={linkWhatsapp(mensagens.geral)}
+            variante="secundario"
+            tamanho="md"
+            iconeInicio="whatsapp"
+            externo
+          >
+            Falar agora no WhatsApp
+          </Botao>
+        </div>
+      </div>
+
+      <!-- Canais diretos -->
+      <div class="flex flex-col gap-4">
+        {
+          canais.map((canal) => (
+            <a
+              href={canal.href}
+              target={canal.externo ? "_blank" : undefined}
+              rel={canal.externo ? "noopener noreferrer" : undefined}
+              class="group flex gap-4 rounded-md border border-borda bg-superficie p-6 no-underline shadow-sm transition-shadow duration-rapida hover:shadow-md"
+            >
+              <span
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-red-50 text-red-700"
+                aria-hidden="true"
+              >
+                <Icone nome={canal.icone} tamanho={22} />
+              </span>
+              <span class="flex flex-col">
+                <span class="text-h3 font-medium text-texto">{canal.titulo}</span>
+                <span class="mt-1 text-caption text-texto-secundario">{canal.descricao}</span>
+                <span class="mt-3 flex items-center gap-1.5 text-caption font-semibold text-marca-texto">
+                  {canal.valor}
+                  <Icone
+                    nome="seta-direita"
+                    tamanho={16}
+                    class="transition-transform duration-rapida group-hover:translate-x-0.5"
+                  />
+                </span>
+              </span>
+            </a>
+          ))
+        }
+
+        <p class="flex items-start gap-2 px-1 text-caption text-texto-secundario">
+          <Icone nome="local" tamanho={16} class="mt-0.5 shrink-0" />
+          <span>
+            {contato.cidade}/{contato.estado} — atendimento remoto em todo o Brasil e
+            presencial na região.
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById("form-diagnostico") as HTMLFormElement | null;
+  const sucesso = document.getElementById("form-sucesso");
+  const erro = document.getElementById("form-erro");
+  const enviar = document.getElementById("form-enviar") as HTMLButtonElement | null;
+  const webhook = import.meta.env.PUBLIC_N8N_WEBHOOK_URL;
+
+  if (form && sucesso && erro && enviar && webhook) {
+    const mostrarErro = (texto: string) => {
+      erro.textContent = texto;
+      erro.hidden = false;
+    };
+
+    const marcar = (campo: HTMLElement, invalido: boolean) => {
+      campo.setAttribute("aria-invalid", String(invalido));
+    };
+
+    form.addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+      erro.hidden = true;
+
+      const obrigatorios = ["nome", "whatsapp", "desafio"];
+      let primeiroInvalido: HTMLElement | null = null;
+
+      for (const nome of obrigatorios) {
+        const campo = form.elements.namedItem(nome) as HTMLInputElement | HTMLSelectElement;
+        const vazio = !campo.value.trim();
+        marcar(campo, vazio);
+        if (vazio && !primeiroInvalido) primeiroInvalido = campo;
+      }
+
+      if (primeiroInvalido) {
+        mostrarErro("Preencha os campos obrigatórios para continuar.");
+        primeiroInvalido.focus();
+        return;
+      }
+
+      const dados = Object.fromEntries(new FormData(form).entries());
+
+      // Robô preencheu o campo escondido: fingimos sucesso e não enviamos nada.
+      if (dados.site) {
+        form.hidden = true;
+        sucesso.hidden = false;
+        return;
+      }
+
+      enviar.disabled = true;
+      const textoOriginal = enviar.textContent;
+      enviar.textContent = "Enviando…";
+
+      try {
+        const resposta = await fetch(webhook, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...dados,
+            origem: "site",
+            pagina: window.location.href,
+            enviadoEm: new Date().toISOString(),
+          }),
+        });
+
+        if (!resposta.ok) throw new Error(`Resposta ${resposta.status}`);
+
+        form.hidden = true;
+        sucesso.hidden = false;
+        sucesso.scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch {
+        mostrarErro(
+          "Não conseguimos enviar agora. Tente de novo em instantes ou chame no WhatsApp — respondemos por lá na mesma hora."
+        );
+        enviar.disabled = false;
+        enviar.textContent = textoOriginal;
+      }
+    });
+  }
+</script>

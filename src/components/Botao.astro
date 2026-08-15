@@ -1,0 +1,86 @@
+---
+/**
+ * Botão — especificação de 05-componentes-ui.md.
+ *
+ * Variantes, estados e tamanhos vêm da tabela do design system. O que vale
+ * lembrar ao usar:
+ *
+ *   - `primario` é preenchimento sólido de Vermelho Neuro, e o design system é
+ *     categórico: UMA ação primária por tela. Na prática desta landing, um CTA
+ *     primário por dobra visível — é a regra 70-20-10 aplicada a produto.
+ *   - `secundario-inverso` é uma extensão para fundo grafite, seguindo a tabela
+ *     de modo escuro de 02-cores.md (borda branca a 12–35% de opacidade). Sobre
+ *     escuro o anel de foco também inverte para branco.
+ */
+import Icone from "./Icone.astro";
+
+interface Props {
+  href?: string;
+  variante?: "primario" | "secundario" | "secundario-inverso" | "fantasma";
+  tamanho?: "sm" | "md" | "lg";
+  /** Nome de um ícone de Icone.astro, exibido depois do texto. */
+  icone?: string;
+  /** Nome de um ícone exibido antes do texto. */
+  iconeInicio?: string;
+  externo?: boolean;
+  type?: "button" | "submit";
+  disabled?: boolean;
+  class?: string;
+  id?: string;
+}
+
+const {
+  href,
+  variante = "primario",
+  tamanho = "md",
+  icone,
+  iconeInicio,
+  externo = false,
+  type = "button",
+  disabled = false,
+  class: classe = "",
+  ...resto
+} = Astro.props;
+
+const base =
+  "inline-flex items-center justify-center gap-2 rounded-md font-semibold leading-none " +
+  "transition-colors duration-rapida no-underline text-center " +
+  "disabled:pointer-events-none disabled:bg-gray-200 disabled:text-gray-400 disabled:border-transparent";
+
+const variantes = {
+  primario: "bg-red-600 text-gray-0 hover:bg-red-800 active:bg-red-900",
+  secundario:
+    "bg-transparent text-gray-900 border border-gray-300 hover:bg-gray-50 active:bg-gray-100",
+  "secundario-inverso":
+    "bg-transparent text-gray-0 border border-gray-0/30 hover:bg-gray-0/10 active:bg-gray-0/[0.16] " +
+    "focus-visible:outline-gray-0",
+  fantasma: "bg-transparent text-gray-800 hover:bg-gray-100 active:bg-gray-200",
+} as const;
+
+/** Alturas e paddings da tabela de tamanhos do design system. */
+const tamanhos = {
+  sm: "h-8 px-3 text-[0.8125rem]",
+  md: "h-10 px-4 text-sm",
+  lg: "h-12 px-6 text-body",
+} as const;
+
+const iconeTamanho = tamanho === "sm" ? 16 : tamanho === "lg" ? 20 : 18;
+const classes = [base, variantes[variante], tamanhos[tamanho], classe];
+const alvoExterno = externo ? { target: "_blank", rel: "noopener noreferrer" } : {};
+---
+
+{
+  href ? (
+    <a href={href} class:list={classes} {...alvoExterno} {...resto}>
+      {iconeInicio && <Icone nome={iconeInicio} tamanho={iconeTamanho} />}
+      <slot />
+      {icone && <Icone nome={icone} tamanho={iconeTamanho} />}
+    </a>
+  ) : (
+    <button type={type} disabled={disabled} class:list={classes} {...resto}>
+      {iconeInicio && <Icone nome={iconeInicio} tamanho={iconeTamanho} />}
+      <slot />
+      {icone && <Icone nome={icone} tamanho={iconeTamanho} />}
+    </button>
+  )
+}

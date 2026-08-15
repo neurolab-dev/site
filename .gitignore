@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.astro/
+.vercel/
+
+# Variáveis de ambiente reais. O que é versionado é o .env.example.
+.env
+.env.production
+.env.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+.DS_Store
+Thumbs.db

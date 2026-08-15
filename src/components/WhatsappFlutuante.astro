@@ -1,0 +1,48 @@
+---
+/**
+ * Botão flutuante de WhatsApp.
+ *
+ * Só aparece depois que o visitante rola a primeira dobra: na abertura da página
+ * o CTA do hero já cobre a ação, e um botão flutuante ali em cima seria um
+ * segundo vermelho sólido competindo com ele.
+ *
+ * Verde do WhatsApp em vez do vermelho da marca é deliberado — o botão é
+ * reconhecido pela cor do aplicativo, e usar o Vermelho Neuro aqui gastaria a
+ * cota de 10% da regra 70-20-10 num elemento que fica na tela o tempo todo.
+ */
+import Icone from "../components/Icone.astro";
+import { linkWhatsapp, mensagens } from "../data/contato";
+---
+
+<a
+  id="whatsapp-flutuante"
+  href={linkWhatsapp(mensagens.flutuante)}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Falar com a NeuroLab no WhatsApp"
+  class="invisible fixed bottom-5 right-5 z-sticky flex h-14 w-14 translate-y-3 items-center justify-center rounded-full bg-[#25D366] text-gray-0 opacity-0 shadow-lg transition-[opacity,transform,visibility] duration-media hover:bg-[#1FB855] focus-visible:outline-offset-4 data-[visivel]:visible data-[visivel]:translate-y-0 data-[visivel]:opacity-100"
+>
+  <Icone nome="whatsapp" tamanho={28} />
+</a>
+
+<script>
+  const botao = document.getElementById("whatsapp-flutuante");
+  const hero = document.getElementById("inicio");
+
+  if (botao && hero) {
+    // IntersectionObserver em vez de listener de scroll: o navegador avisa
+    // quando o hero sai da tela, sem rodar código a cada pixel rolado.
+    const observador = new IntersectionObserver(
+      ([entrada]) => {
+        if (entrada && !entrada.isIntersecting) {
+          botao.setAttribute("data-visivel", "");
+        } else {
+          botao.removeAttribute("data-visivel");
+        }
+      },
+      { rootMargin: "-40% 0px 0px 0px" }
+    );
+
+    observador.observe(hero);
+  }
+</script>

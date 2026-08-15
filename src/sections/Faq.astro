@@ -1,0 +1,61 @@
+---
+/**
+ * Perguntas frequentes.
+ *
+ * Usa `<details>`/`<summary>` nativos: acordeão acessível por teclado, com
+ * estado próprio, sem uma linha de JavaScript. O conteúdo está sempre no HTML,
+ * o que também o torna indexável — o JSON-LD de FAQPage é montado a partir do
+ * mesmo arquivo de dados, em Base.astro.
+ */
+import Icone from "../components/Icone.astro";
+import { faq } from "../data/faq";
+---
+
+<section id="perguntas" class="secao bg-fundo" aria-labelledby="titulo-perguntas">
+  <div class="container-conteudo">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-16">
+      <div>
+        <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
+          Perguntas frequentes
+        </p>
+        <h2 id="titulo-perguntas" class="titulo-secao font-semibold">
+          O que costumam nos perguntar
+        </h2>
+        <p class="mt-5 text-body text-texto-secundario">
+          Se a sua dúvida não estiver aqui, mande no WhatsApp. Respondemos sem
+          formulário e sem intermediário.
+        </p>
+      </div>
+
+      <div class="divide-y divide-borda border-y border-borda">
+        {
+          faq.map((item) => (
+            <details class="group">
+              <summary
+                class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-body font-medium transition-colors duration-rapida hover:text-marca-texto"
+              >
+                {item.pergunta}
+                <Icone
+                  nome="seta-baixo"
+                  tamanho={20}
+                  class="shrink-0 text-texto-secundario transition-transform duration-rapida group-open:rotate-180"
+                />
+              </summary>
+              <p class="pb-6 pr-10 text-caption leading-relaxed text-texto-secundario">
+                {item.resposta}
+              </p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* O marcador padrão do <summary> aparece por engine: Chrome/Firefox usam
+     `list-style`, Safari usa este pseudo-elemento próprio. */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+</style>
