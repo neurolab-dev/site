@@ -17,10 +17,11 @@ import { pilares } from "../data/pilares";
 const ano = new Date().getFullYear();
 
 const instagramExibicao = contato.instagram.replace(/^https?:\/\/(www\.)?instagram\.com\//, "@").replace(/\/$/, "");
+const linkedinExibicao = contato.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\/(company\/|in\/)?/, "").replace(/\/$/, "");
 
 const redes = [
-  { nome: "Instagram", icone: "instagram", href: contato.instagram },
-  { nome: "LinkedIn", icone: "linkedin", href: contato.linkedin },
+  { nome: "Instagram", icone: "instagram", href: contato.instagram, texto: instagramExibicao },
+  { nome: "LinkedIn", icone: "linkedin", href: contato.linkedin, texto: linkedinExibicao },
 ].filter((rede) => Boolean(rede.href));
 
 const navegacao = [
@@ -45,17 +46,17 @@ const navegacao = [
 
         {
           redes.length > 0 && (
-            <ul class="mt-6 flex gap-3">
+            <ul class="mt-6 flex flex-col gap-2">
               {redes.map((rede) => (
                 <li>
                   <a
                     href={rede.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="flex h-10 w-10 items-center justify-center rounded-md border border-gray-0/20 text-gray-0 transition-colors duration-rapida hover:bg-gray-0/10"
-                    aria-label={`NeuroLab no ${rede.nome}`}
+                    class="flex items-center gap-2 rounded-md border border-gray-0/20 px-3 py-2 text-caption text-gray-0 transition-colors duration-rapida hover:bg-gray-0/10"
                   >
-                    <Icone nome={rede.icone} tamanho={20} />
+                    <Icone nome={rede.icone} tamanho={18} class="shrink-0" />
+                    {rede.texto}
                   </a>
                 </li>
               ))}
