@@ -15,12 +15,7 @@ export const contato = {
   whatsappExibicao: "(38) 99181-0452",
   telefoneE164: "+5538991810452",
 
-  /**
-   * PENDENTE — trocar pelo e-mail comercial definitivo antes de divulgar o site.
-   * Enquanto começar com "contato@exemplo", o rodapé esconde o e-mail em vez de
-   * publicar um endereço que não recebe nada. Ver docs/pendencias.md.
-   */
-  email: "contato@exemplo.com.br",
+  email: "neurolab.dev@gmail.com",
 
   cidade: "Palmas",
   estado: "TO",
