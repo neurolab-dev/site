@@ -16,6 +16,8 @@ import { pilares } from "../data/pilares";
 
 const ano = new Date().getFullYear();
 
+const instagramExibicao = contato.instagram.replace(/^https?:\/\/(www\.)?instagram\.com\//, "@").replace(/\/$/, "");
+
 const redes = [
   { nome: "Instagram", icone: "instagram", href: contato.instagram },
   { nome: "LinkedIn", icone: "linkedin", href: contato.linkedin },
@@ -147,6 +149,21 @@ const navegacao = [
               <Icone nome="local" tamanho={16} class="shrink-0" />
               {contato.cidade}/{contato.estado}
             </li>
+            {
+              contato.instagram && (
+                <li>
+                  <a
+                    href={contato.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-center gap-2 rounded-sm transition-colors duration-rapida hover:text-gray-0"
+                  >
+                    <Icone nome="instagram" tamanho={16} class="shrink-0" />
+                    {instagramExibicao}
+                  </a>
+                </li>
+              )
+            }
           </ul>
         </div>
       </div>
