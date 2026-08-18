@@ -29,8 +29,7 @@ export const contato = {
    */
   agenda: "https://calendar.app.google/u4vNBgLJsGyxzXz19",
 
-  /** Perfil ainda não criado. Enquanto vazio, o ícone não é renderizado. */
-  instagram: "",
+  instagram: "https://www.instagram.com/neurolab.dev",
   linkedin: "",
 } as const;
 

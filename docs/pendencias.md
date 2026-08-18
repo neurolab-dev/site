@@ -39,7 +39,6 @@ os arquivos no design system, `npm run marca:sync` propaga tudo.
 | Item | O que fazer | O que muda |
 |---|---|---|
 | **Webhook do n8n** | Criar o fluxo com um nó Webhook (POST) e colar a URL em `PUBLIC_N8N_WEBHOOK_URL` | Sem isso o formulário não é renderizado — o bloco de contato mostra um aviso e cai para o WhatsApp |
-| **Instagram** | Preencher `instagram` em `src/data/contato.ts` | O ícone aparece sozinho no rodapé e o perfil entra no `sameAs` do JSON-LD |
 | **Cases e depoimentos** | Acrescentar objetos em [`src/data/cases.ts`](../src/data/cases.ts) | A seção e o link do menu aparecem sozinhos assim que houver o primeiro item |
 | **Domínio próprio** | Registrar, apontar o DNS e trocar `SITE_URL` | Ver README → Publicação |
 
