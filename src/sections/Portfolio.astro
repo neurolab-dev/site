@@ -1,0 +1,62 @@
+---
+/**
+ * Portfólio de sites entregues.
+ *
+ * Igual a Cases.astro, só renderiza com conteúdo em src/data/portfolio.ts — o
+ * link "Portfólio" do menu segue a mesma condição, em Header.astro.
+ *
+ * Ao contrário de Cases (número de resultado + depoimento autorizado), aqui o
+ * card é o próprio link externo: a prova é o site, não uma citação sobre ele.
+ */
+import Badge from "../components/Badge.astro";
+import Icone from "../components/Icone.astro";
+import { portfolio } from "../data/portfolio";
+---
+
+{
+  portfolio.length > 0 && (
+    <section id="portfolio" class="secao bg-fundo" aria-labelledby="titulo-portfolio">
+      <div class="container-conteudo">
+        <div class="max-w-leitura">
+          <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
+            Portfólio
+          </p>
+          <h2 id="titulo-portfolio" class="titulo-secao font-semibold">
+            Sites que já colocamos no ar
+          </h2>
+          <p class="mt-5 text-body text-texto-secundario">
+            Antes de decidir, veja o que já entregamos. Cada card abre o site real, no
+            navegador ou no celular.
+          </p>
+        </div>
+
+        <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {portfolio.map((projeto) => (
+            <li>
+              <a
+                href={projeto.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group flex h-full flex-col rounded-md border border-borda bg-superficie p-6 transition-colors duration-rapida hover:border-red-600 md:p-8"
+              >
+                <Badge variante="marca">{projeto.categoria}</Badge>
+                <h3 class="mt-4 text-h3 font-medium">{projeto.nome}</h3>
+                <p class="mt-2 flex-1 text-caption leading-relaxed text-texto-secundario">
+                  {projeto.descricao}
+                </p>
+                <span class="mt-5 inline-flex items-center gap-1.5 text-caption font-semibold text-red-700">
+                  Ver site
+                  <Icone
+                    nome="seta-direita"
+                    tamanho={16}
+                    class="transition-transform duration-rapida group-hover:translate-x-1"
+                  />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

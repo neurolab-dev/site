@@ -15,13 +15,15 @@ import Botao from "../components/Botao.astro";
 import Icone from "../components/Icone.astro";
 import { linkWhatsapp, mensagens } from "../data/contato";
 import { cases } from "../data/cases";
+import { portfolio } from "../data/portfolio";
 
 const links = [
   { href: "#problema", texto: "Desafios" },
   { href: "#pilares", texto: "O que fazemos" },
   { href: "#servicos", texto: "Serviços" },
   { href: "#metodo", texto: "Método" },
-  // O link só existe quando existe conteúdo. Ver src/data/cases.ts.
+  // Os links só existem quando existe conteúdo. Ver src/data/portfolio.ts e cases.ts.
+  ...(portfolio.length ? [{ href: "#portfolio", texto: "Portfólio" }] : []),
   ...(cases.length ? [{ href: "#cases", texto: "Cases" }] : []),
   { href: "#perguntas", texto: "Perguntas" },
 ];
