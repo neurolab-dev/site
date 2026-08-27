@@ -89,6 +89,26 @@ qualquer alteração futura:
    tem contraste 4.26:1 sobre branco e não passa no mínimo de 4.5:1 para texto
    normal.
 
+### Tipografia responsiva do hero
+
+A escala do design system (`display` 48px, `h1` 36px, `h2` 24px…) descreve o
+tamanho no **desktop**. Num H1 de landing page isso não sobrevive ao celular: a
+primeira palavra do hero, "Transformamos", mede 8,26em em Montserrat Bold — a
+48px são ~397px, contra ~342px de largura útil numa tela de 390px — e, por ser
+uma palavra só, não há onde quebrar. O resultado era o título cortado na borda.
+
+Por isso `.titulo-hero`, em `src/styles/global.css`, tem duas faixas:
+
+- **abaixo de 768px** — `clamp(var(--text-h2), 9.5vw, var(--text-display))`:
+  o tamanho acompanha a viewport, com folga até em telas de 320px.
+- **de 768px para cima** — `clamp(var(--text-display), 5.2vw, 4rem)`: os 48–64px
+  que o guia de marca pede.
+
+As duas se encontram exatamente em 48px no breakpoint, sem salto visível, e os
+limites usam passos que já existem na escala — nenhum tamanho novo foi
+inventado. Ao trocar o texto do hero, confira antes a **palavra mais longa**:
+é ela, e não o comprimento da frase, que decide se o título cabe no celular.
+
 ## Publicação
 
 O mesmo código serve os dois destinos, por variável de ambiente:

@@ -78,9 +78,24 @@
   /* 03-tipografia.md, referência oficial do guia de marca: o H1 de um site fica
      entre 48px e 64px. O token `display` (3rem = 48px) é o piso do intervalo, e
      64px o teto — a interpolação por viewport apenas percorre essa faixa, sem
-     inventar um tamanho fora dela. */
+     inventar um tamanho fora dela.
+
+     Essa faixa, porém, é a do contexto desktop. No celular os 48px do piso
+     estouram a linha: "Transformamos" mede 8,26em em Montserrat Bold — ~397px
+     a 48px, contra os ~342px úteis de uma tela de 390px — e, por ser uma
+     palavra só, não há onde quebrar. Abaixo de 768px o tamanho passa a
+     acompanhar a viewport (9.5vw deixa folga até em telas de 320px), preso
+     entre dois passos que já existem na escala: `h2` como piso de segurança e
+     `display` como teto. Em 768px as duas regras se encontram em 48px, sem
+     salto. */
   .titulo-hero {
-    font-size: clamp(var(--text-display), 5.2vw, 4rem);
+    font-size: clamp(var(--text-h2), 9.5vw, var(--text-display));
+  }
+
+  @media (min-width: 768px) {
+    .titulo-hero {
+      font-size: clamp(var(--text-display), 5.2vw, 4rem);
+    }
   }
 
   /* Título de seção. A escala do design system fixa h2 em 24px, calibrado para
