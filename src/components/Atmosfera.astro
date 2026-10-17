@@ -1,0 +1,11 @@
+---
+interface Props { variante?: "clara" | "escura"; }
+const { variante = "clara" } = Astro.props;
+---
+<div class:list={["atmosfera", `atmosfera-${variante}`]} aria-hidden="true">
+  <div class="atmosfera-luz"></div>
+  <div class="atmosfera-anel anel-a"></div>
+  <div class="atmosfera-anel anel-b"></div>
+  <div class="atmosfera-anel anel-c"></div>
+  <div class="atmosfera-grade"></div>
+</div>

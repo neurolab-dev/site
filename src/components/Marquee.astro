@@ -1,0 +1,12 @@
+---
+const itens = ["AUTOMAÇÃO", "INTELIGÊNCIA ARTIFICIAL", "DADOS", "ESTRATÉGIA", "RESULTADO"];
+const trilha = [...itens, ...itens];
+---
+
+<div class="marquee-tecnologia" aria-label="Automação, inteligência artificial, dados, estratégia e resultado">
+  <div class="marquee-trilha">
+    {trilha.map((item, indice) => (
+      <span aria-hidden={indice >= itens.length ? "true" : undefined}>{item}<b>✦</b></span>
+    ))}
+  </div>
+</div>

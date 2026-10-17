@@ -1,0 +1,47 @@
+---
+/**
+ * Camada de operação abstrata do hero.
+ * Não representa dados de uma empresa: é uma metáfora visual para leitura,
+ * decisão e evolução contínua.
+ */
+---
+
+<div class="painel-operacional" aria-hidden="true">
+  <div class="painel-grade"></div>
+  <div class="painel-varredura"></div>
+  <div class="painel-brilho brilho-um"></div>
+  <div class="painel-brilho brilho-dois"></div>
+
+  <svg class="painel-grafico" viewBox="0 0 1440 760" preserveAspectRatio="xMidYMid slice" fill="none" focusable="false">
+    <g class="grafico-guias">
+      <path d="M0 144H1440M0 296H1440M0 448H1440M0 600H1440" />
+      <path d="M180 0V760M420 0V760M660 0V760M900 0V760M1140 0V760M1380 0V760" />
+    </g>
+    <path class="grafico-area" d="M-80 638C90 588 132 624 254 530C347 458 421 518 533 400C636 290 723 430 830 329C952 215 1004 287 1111 172C1216 61 1323 178 1520 58V760H-80Z" />
+    <path class="grafico-linha grafico-linha-principal" d="M-80 638C90 588 132 624 254 530C347 458 421 518 533 400C636 290 723 430 830 329C952 215 1004 287 1111 172C1216 61 1323 178 1520 58" />
+    <path class="grafico-linha grafico-linha-secundaria" d="M-80 505C91 505 125 462 244 486C379 514 439 393 542 461C659 540 727 419 843 452C935 478 1030 360 1134 386C1235 411 1301 314 1510 348" />
+    <g class="grafico-pontos">
+      <circle cx="254" cy="530" r="7" /><circle cx="533" cy="400" r="8" /><circle cx="830" cy="329" r="7" />
+      <circle cx="1111" cy="172" r="9" /><circle cx="1322" cy="178" r="7" />
+    </g>
+  </svg>
+
+  <div class="fluxo-operacional fluxo-a"><span></span><i></i><b></b></div>
+  <div class="fluxo-operacional fluxo-b"><span></span><i></i><b></b></div>
+  <div class="fluxo-operacional fluxo-c"><span></span><i></i><b></b></div>
+
+  <div class="modulo-operacional modulo-status">
+    <span class="modulo-legenda"><i></i>OPERAÇÃO EM FLUXO</span>
+    <strong>LEITURA <em>→</em> AÇÃO</strong>
+    <span>Conexões em movimento</span>
+  </div>
+
+  <div class="modulo-operacional modulo-crescimento">
+    <span class="modulo-legenda">EVOLUÇÃO DO PROCESSO</span>
+    <div class="mini-grafico"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <span>Visualização conceitual</span>
+  </div>
+
+  <div class="marcador-operacional marcador-a"><i></i><span>SINAL<br />CAPTADO</span></div>
+  <div class="marcador-operacional marcador-b"><i></i><span>DECISÃO<br />ORIENTADA</span></div>
+</div>

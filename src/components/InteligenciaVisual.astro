@@ -1,0 +1,43 @@
+---
+/**
+ * Interface abstrata da NeuroLab 2.0.
+ * Traduz sinais dispersos em conexão, leitura e direção — sem representar um
+ * produto fictício. O movimento fica no CSS, mantendo a página leve.
+ */
+---
+
+<div class="interface-inteligente" aria-hidden="true">
+  <div class="interface-aura interface-aura-a"></div>
+  <div class="interface-aura interface-aura-b"></div>
+  <div class="interface-grade"></div>
+
+  <svg class="interface-fluxo" viewBox="0 0 620 580" fill="none" focusable="false">
+    <path class="fluxo-linha fluxo-linha-a" d="M38 414C106 414 123 296 202 296C280 296 284 157 365 157C440 157 449 248 574 248" />
+    <path class="fluxo-linha fluxo-linha-b" d="M18 142C99 142 123 211 187 211C278 211 278 389 375 389C451 389 477 335 604 335" />
+    <path class="fluxo-linha fluxo-linha-c" d="M110 540C110 467 192 476 242 424C292 372 311 452 402 452C478 452 487 498 584 498" />
+    <g class="interface-nos">
+      <circle cx="38" cy="414" r="8" /><circle cx="202" cy="296" r="12" />
+      <circle cx="365" cy="157" r="9" /><circle cx="574" cy="248" r="12" />
+      <circle cx="187" cy="211" r="8" /><circle cx="375" cy="389" r="13" />
+      <circle cx="604" cy="335" r="8" /><circle cx="242" cy="424" r="8" />
+      <circle cx="402" cy="452" r="11" />
+    </g>
+  </svg>
+
+  <div class="painel-sinal painel-sinal-principal">
+    <span class="painel-etiqueta"><i></i>SISTEMA ATIVO</span>
+    <strong>01</strong>
+    <span>Gargalos identificados</span>
+  </div>
+
+  <div class="painel-sinal painel-sinal-secundario">
+    <span class="painel-etiqueta">FLUXO</span>
+    <div class="barras-sinal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <span>Dados conectados</span>
+  </div>
+
+  <div class="orbita orbita-um"><span></span></div>
+  <div class="orbita orbita-dois"><span></span></div>
+  <span class="interface-coordenada coordenada-a">17°48' · 48°56'</span>
+  <span class="interface-coordenada coordenada-b">NEUROLAB / 2026</span>
+</div>
