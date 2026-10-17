@@ -41,4 +41,94 @@ import WhatsappFlutuante from "../components/WhatsappFlutuante.astro";
 
   <Footer />
   <WhatsappFlutuante />
+
+  <script>
+    // Pequena camada de motion: conteúdo continua visível sem JavaScript e só
+    // ganha entrada progressiva quando o navegador suporta observação.
+    const reduzMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const alvos = document.querySelectorAll<HTMLElement>("[data-revelar], main section > .container-conteudo > .max-w-leitura");
+    alvos.forEach(alvo => alvo.setAttribute("data-revelar", ""));
+
+    if (!reduzMovimento && "IntersectionObserver" in window) {
+      document.documentElement.dataset.motion = "pronto";
+      const observador = new IntersectionObserver(
+        (entradas) => {
+          entradas.forEach((entrada) => {
+            if (!entrada.isIntersecting) return;
+            (entrada.target as HTMLElement).classList.add("revelado");
+            observador.unobserve(entrada.target);
+          });
+        },
+        { threshold: 0.08 }
+      );
+      alvos.forEach((alvo) => observador.observe(alvo));
+    }
+
+    document.querySelectorAll<HTMLButtonElement>("[data-card-virar]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        const aberto = botao.getAttribute("aria-expanded") !== "true";
+        botao.setAttribute("aria-expanded", String(aberto));
+        botao.setAttribute("aria-label", aberto ? `${botao.dataset.nome}. ${botao.dataset.descricao}. Voltar.` : `Ver detalhes: ${botao.dataset.nome}`);
+      });
+      botao.addEventListener("keydown", evento => {
+        if (evento.key === "Escape") {
+          botao.setAttribute("aria-expanded", "false");
+          botao.setAttribute("aria-label", `Ver detalhes: ${botao.dataset.nome}`);
+        }
+      });
+    });
+
+    document.querySelectorAll<HTMLElement>("[data-carrossel]").forEach(carrossel => {
+      const secao = carrossel.closest<HTMLElement>("section");
+      const palco = secao?.querySelector<HTMLElement>(".container-conteudo");
+      if (!secao || !palco) return;
+
+      const passo = () => Math.min(carrossel.clientWidth * 0.82, 420);
+      const limite = () => Math.max(0, carrossel.scrollWidth - carrossel.clientWidth);
+      const inicio = () => secao.getBoundingClientRect().top + window.scrollY;
+      const percurso = () => Math.max(1, secao.offsetHeight - window.innerHeight);
+      const anterior = document.querySelector<HTMLButtonElement>("[data-carrossel-anterior]");
+      const proximo = document.querySelector<HTMLButtonElement>("[data-carrossel-proximo]");
+
+      let quadro = 0;
+      const sincronizar = () => {
+        quadro = 0;
+        if (secao.dataset.scrollHorizontal !== "true") return;
+        const progresso = Math.max(0, Math.min(1, (window.scrollY - inicio()) / percurso()));
+        carrossel.scrollLeft = progresso * limite();
+      };
+      const agendar = () => {
+        if (!quadro) quadro = requestAnimationFrame(sincronizar);
+      };
+      const configurar = () => {
+        secao.dataset.scrollHorizontal = "false";
+        secao.style.removeProperty("--servicos-percurso");
+        if (window.innerWidth < 1024 || window.innerHeight < 700 || !limite()) return;
+
+        secao.dataset.scrollHorizontal = "true";
+        secao.style.setProperty("--servicos-percurso", `${limite()}px`);
+        if (palco.getBoundingClientRect().height + 80 > window.innerHeight) {
+          secao.dataset.scrollHorizontal = "false";
+          secao.style.removeProperty("--servicos-percurso");
+          return;
+        }
+        sincronizar();
+      };
+
+      const navegar = (direcao: number) => {
+        if (secao.dataset.scrollHorizontal === "true") {
+          const destino = Math.max(0, Math.min(limite(), carrossel.scrollLeft + direcao * passo()));
+          window.scrollTo({ top: inicio() + (destino / limite()) * percurso(), behavior: reduzMovimento ? "instant" : "smooth" });
+        } else {
+          carrossel.scrollBy({ left: direcao * passo(), behavior: reduzMovimento ? "instant" : "smooth" });
+        }
+      };
+      anterior?.addEventListener("click", () => navegar(-1));
+      proximo?.addEventListener("click", () => navegar(1));
+
+      window.addEventListener("scroll", agendar, { passive: true });
+      window.addEventListener("resize", configurar, { passive: true });
+      configurar();
+    });
+  </script>
 </Base>
