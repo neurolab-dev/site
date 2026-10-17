@@ -9,7 +9,8 @@
  */
 import Botao from "../components/Botao.astro";
 import Icone from "../components/Icone.astro";
-import RedeNeural from "../components/RedeNeural.astro";
+import PainelOperacional from "../components/PainelOperacional.astro";
+import Marquee from "../components/Marquee.astro";
 import { contato, linkWhatsapp, mensagens } from "../data/contato";
 
 const provas = [
@@ -20,20 +21,19 @@ const provas = [
 
 <section
   id="inicio"
-  class="superficie-escura relative isolate overflow-hidden bg-gray-900 text-gray-0"
+  class="hero-v2 superficie-escura relative isolate overflow-hidden bg-gray-900 text-gray-0"
   aria-labelledby="titulo-hero"
 >
-  <RedeNeural opacidade={0.08} semente={11} class="absolute inset-0 h-full w-full text-red-400" />
-
-  <div class="container-conteudo relative py-20 md:py-28 lg:py-32">
-    <div class="max-w-3xl">
-      <p class="mb-6 flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.18em] text-red-400">
+  <PainelOperacional />
+  <div class="container-conteudo relative grid min-h-[min(48rem,calc(100svh-4rem))] items-center gap-10 py-16 md:py-24 lg:grid-cols-[minmax(0,1.05fr)_minmax(24rem,0.95fr)] lg:py-28">
+    <div class="relative z-10 max-w-3xl">
+      <p class="hero-sobrancelha mb-6 flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.18em] text-red-400">
         <span aria-hidden="true" class="inline-block h-px w-8 bg-red-400"></span>
         Soluções para negócios
       </p>
 
-      <h1 id="titulo-hero" class="titulo-hero font-bold text-gray-0">
-        Transformamos inteligência em resultados.
+      <h1 id="titulo-hero" class="titulo-hero hero-titulo font-bold text-gray-0">
+        Transformamos<br class="hidden md:block" /> inteligência em <span>resultados.</span>
       </h1>
 
       <p class="mt-6 max-w-leitura text-body text-gray-300 md:text-[1.125rem]">
@@ -54,7 +54,7 @@ const provas = [
         </Botao>
 
         <Botao href="#pilares" variante="secundario-inverso" tamanho="lg" icone="seta-baixo">
-          Nossas soluções
+          Ver como atuamos
         </Botao>
       </div>
 
@@ -69,5 +69,13 @@ const provas = [
         }
       </ul>
     </div>
+
+    <div class="hero-ponto-focal" aria-hidden="true">
+      <span>NEUROLAB</span>
+      <i></i>
+      <b>INTELIGÊNCIA APLICADA</b>
+    </div>
   </div>
+
+  <Marquee />
 </section>

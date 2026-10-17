@@ -28,7 +28,7 @@ import { problemas } from "../data/problemas";
     <ul class="mt-12 grid gap-6 sm:grid-cols-2">
       {
         problemas.map((problema) => (
-          <li class="flex gap-4 rounded-md border border-borda bg-superficie p-6">
+          <li class="flex gap-4 rounded-md border border-borda bg-superficie p-6 transition-all duration-media hover:-translate-y-1 hover:border-red-600 hover:shadow-md" data-revelar>
             <span
               class="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-red-50 text-red-700"
               aria-hidden="true"

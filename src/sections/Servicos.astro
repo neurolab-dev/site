@@ -10,12 +10,14 @@
 import Icone from "../components/Icone.astro";
 import { servicos } from "../data/servicos";
 import { pilares } from "../data/pilares";
+import Atmosfera from "../components/Atmosfera.astro";
 
 const nomeDoPilar = Object.fromEntries(pilares.map((p) => [p.id, p.nome]));
 ---
 
-<section id="servicos" class="secao bg-fundo-sutil" aria-labelledby="titulo-servicos">
-  <div class="container-conteudo">
+<section id="servicos" class="secao secao-viva servicos-vivos bg-fundo-sutil" aria-labelledby="titulo-servicos">
+  <Atmosfera />
+  <div class="container-conteudo relative">
     <div class="max-w-leitura">
       <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
         Serviços
@@ -29,23 +31,46 @@ const nomeDoPilar = Object.fromEntries(pilares.map((p) => [p.id, p.nome]));
       </p>
     </div>
 
-    <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="servicos-controles mt-10" aria-label="Navegação dos serviços">
+      <p><span class="dica-desktop">Continue rolando a página para explorar todas as frentes.</span><span class="dica-mobile">Deslize para explorar todas as frentes.</span></p>
+      <div>
+        <button type="button" class="controle-carrossel" data-carrossel-anterior aria-controls="trilha-servicos" aria-label="Ver serviços anteriores">
+          <Icone nome="seta-direita" tamanho={18} />
+        </button>
+        <button type="button" class="controle-carrossel" data-carrossel-proximo aria-controls="trilha-servicos" aria-label="Ver próximos serviços">
+          <Icone nome="seta-direita" tamanho={18} />
+        </button>
+      </div>
+    </div>
+
+    <div class="servicos-janela" data-carrossel>
+      <ul id="trilha-servicos" class="servicos-trilha mt-4" aria-label="Serviços da NeuroLab">
       {
-        servicos.map((servico) => (
-          <li class="flex h-full flex-col rounded-md border border-borda bg-superficie p-6">
-            <div class="flex items-center gap-3">
-              <Icone nome={servico.icone} tamanho={22} class="shrink-0 text-red-700" />
-              <h3 class="text-h3 font-medium">{servico.nome}</h3>
-            </div>
-            <p class="mt-3 flex-1 text-caption leading-relaxed text-texto-secundario">
-              {servico.descricao}
-            </p>
-            <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-texto-secundario">
-              {nomeDoPilar[servico.pilar]}
-            </p>
+        servicos.map((servico, indice) => (
+          <li class="cartao-cena" data-revelar>
+            <h3 class="sr-only">{servico.nome}</h3>
+            <button class="cartao-virar" type="button" data-card-virar data-nome={servico.nome} data-descricao={servico.descricao} aria-expanded="false" aria-label={`Ver detalhes: ${servico.nome}`}>
+              <span class="cartao-miolo" aria-hidden="true">
+                <span class="cartao-face cartao-frente">
+                  <span class="cartao-indice">NEUROLAB / {String(indice+1).padStart(2,"0")}</span>
+                  <span class="cartao-grafismo"><span></span><span></span><Icone nome={servico.icone} tamanho={44} /></span>
+                  <span class="cartao-categoria">{nomeDoPilar[servico.pilar]}</span>
+                  <span class="cartao-titulo">{servico.nome}</span>
+                  <span class="cartao-gesto">Explorar solução <Icone nome="seta-direita" tamanho={18} /></span>
+                </span>
+                <span class="cartao-face cartao-verso">
+                  <span class="cartao-indice">APLICAÇÃO / {String(indice+1).padStart(2,"0")}</span>
+                  <span class="cartao-titulo">{servico.nome}</span>
+                  <span class="cartao-descricao">{servico.descricao}</span>
+                  <span class="cartao-gesto">Voltar <Icone nome="seta-direita" tamanho={18} /></span>
+                </span>
+              </span>
+            </button>
+            <p class="sr-only">{servico.descricao}</p>
           </li>
         ))
       }
-    </ul>
+      </ul>
+    </div>
   </div>
 </section>

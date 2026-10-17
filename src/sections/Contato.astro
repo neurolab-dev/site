@@ -77,7 +77,7 @@ const rotuloBase = "block text-caption font-semibold text-gray-800";
 
     <div class="mt-12 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:gap-12">
       <!-- Formulário -->
-      <div class="rounded-md border border-borda bg-superficie p-6 md:p-8">
+      <div class="min-w-0 rounded-md border border-borda bg-superficie p-6 md:p-8">
         {
           temWebhook ? (
             <form id="form-diagnostico" novalidate class="flex flex-col gap-5">
@@ -250,7 +250,7 @@ const rotuloBase = "block text-caption font-semibold text-gray-800";
       </div>
 
       <!-- Canais diretos -->
-      <div class="flex flex-col gap-4">
+      <div class="flex min-w-0 flex-col gap-4">
         {
           canais.map((canal) => (
             <a
@@ -265,7 +265,7 @@ const rotuloBase = "block text-caption font-semibold text-gray-800";
               >
                 <Icone nome={canal.icone} tamanho={22} />
               </span>
-              <span class="flex flex-col">
+              <span class="flex min-w-0 flex-col">
                 <span class="text-h3 font-medium text-texto">{canal.titulo}</span>
                 <span class="mt-1 text-caption text-texto-secundario">{canal.descricao}</span>
                 <span class="mt-3 flex items-center gap-1.5 text-caption font-semibold text-marca-texto">

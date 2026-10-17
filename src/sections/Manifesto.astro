@@ -7,7 +7,7 @@
  * NeuroLab de uma agência tradicional, e é por isso que ela tem o maior peso
  * tipográfico da seção.
  */
-import RedeNeural from "../components/RedeNeural.astro";
+import FluxoManifesto from "../components/FluxoManifesto.astro";
 
 const valores = [
   "Inteligência aplicada",
@@ -22,13 +22,12 @@ const valores = [
 
 <section
   id="manifesto"
-  class="superficie-escura secao relative isolate overflow-hidden bg-gray-900 text-gray-0"
+  class="manifesto-imersivo superficie-escura secao relative isolate overflow-hidden bg-gray-900 text-gray-0"
   aria-labelledby="titulo-manifesto"
 >
-  <RedeNeural opacidade={0.07} semente={23} class="absolute inset-0 h-full w-full text-red-400" />
-
-  <div class="container-conteudo relative">
-    <div class="max-w-leitura">
+  <div class="container-conteudo relative manifesto-conteudo">
+    <div class="manifesto-layout">
+      <div class="max-w-leitura manifesto-texto" data-revelar>
       <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-red-400">
         No que acreditamos
       </p>
@@ -51,9 +50,11 @@ const valores = [
         Não importa se você é um pequeno negócio local ou uma empresa em expansão. O
         objetivo é o mesmo: fazer sua empresa trabalhar de forma mais inteligente.
       </p>
+      </div>
+      <FluxoManifesto />
     </div>
 
-    <ul class="mt-12 flex flex-wrap gap-x-6 gap-y-3 border-t border-gray-0/15 pt-8">
+    <ul class="manifesto-valores mt-12 flex flex-wrap gap-x-6 gap-y-3 border-t border-gray-0/15 pt-8">
       {
         valores.map((valor) => (
           <li class="text-caption font-medium text-gray-300">{valor}</li>

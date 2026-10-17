@@ -9,11 +9,13 @@
  */
 import Icone from "../components/Icone.astro";
 import { pilares } from "../data/pilares";
+import Atmosfera from "../components/Atmosfera.astro";
 ---
 
-<section id="pilares" class="secao bg-fundo" aria-labelledby="titulo-pilares">
-  <div class="container-conteudo">
-    <div class="max-w-leitura">
+<section id="pilares" class="secao secao-viva pilares-vivos bg-fundo" aria-labelledby="titulo-pilares">
+  <Atmosfera />
+  <div class="container-conteudo relative pilares-layout">
+    <div class="max-w-leitura pilares-intro" data-revelar>
       <p class="mb-4 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
         O que fazemos
       </p>
@@ -26,19 +28,23 @@ import { pilares } from "../data/pilares";
       </p>
     </div>
 
-    <ul class="mt-12 grid gap-6 lg:grid-cols-2">
+    <ul class="grade-pilares grid gap-6">
       {
-        pilares.map((pilar) => (
+        pilares.map((pilar, indice) => (
           <li
             id={`pilar-${pilar.id}`}
-            class="flex flex-col rounded-md border border-borda border-l-[3px] border-l-red-600 bg-superficie p-6 md:p-8"
+            class="card-pilar flex flex-col rounded-md border border-borda bg-superficie p-6 md:p-8"
+            data-revelar
           >
-            <span
-              class="flex h-12 w-12 items-center justify-center rounded-md bg-red-50 text-red-700"
-              aria-hidden="true"
-            >
-              <Icone nome={pilar.icone} tamanho={24} />
-            </span>
+            <div class="flex items-start justify-between gap-4">
+              <span
+                class="flex h-12 w-12 items-center justify-center rounded-md bg-red-50 text-red-700"
+                aria-hidden="true"
+              >
+                <Icone nome={pilar.icone} tamanho={24} />
+              </span>
+              <span class="numero-pilar" aria-hidden="true">0{indice + 1}</span>
+            </div>
 
             <h3 class="mt-5 text-h2 font-semibold">{pilar.nome}</h3>
             <p class="mt-2 text-body font-medium text-marca-texto">{pilar.resumo}</p>
@@ -52,6 +58,10 @@ import { pilares } from "../data/pilares";
                 </li>
               ))}
             </ul>
+
+            <span class="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-marca-texto">
+              <i class="h-1.5 w-1.5 rounded-full bg-red-600"></i> frente ativa
+            </span>
           </li>
         ))
       }
