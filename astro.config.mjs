@@ -11,7 +11,7 @@ import sitemap from "@astrojs/sitemap";
 //
 // Ver README.md → "Publicação".
 const SITE_BASE = process.env.SITE_BASE || "/";
-const SITE_URL = process.env.SITE_URL || "https://neurolab.com.br";
+const SITE_URL = process.env.SITE_URL || "https://www.neurolab.dev.br";
 
 export default defineConfig({
   site: SITE_URL,

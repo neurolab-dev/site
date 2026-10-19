@@ -36,7 +36,7 @@ jobs:
           # do repositório. Trocar para "/" e adicionar public/CNAME quando o
           # domínio próprio entrar. Ver README.md → Publicação.
           SITE_BASE: /neurolab-site/
-          SITE_URL: ${{ vars.SITE_URL || 'https://neurolab.com.br' }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://www.neurolab.dev.br' }}
           # Variáveis opcionais. Cadastre em Settings → Secrets and variables →
           # Actions → Variables. Vazias, o recurso simplesmente não é ativado.
           PUBLIC_N8N_WEBHOOK_URL: ${{ vars.PUBLIC_N8N_WEBHOOK_URL }}
