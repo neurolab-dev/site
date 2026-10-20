@@ -11,6 +11,13 @@
 @tailwind utilities;
 
 @layer base {
+  /* O atributo `hidden` precisa vencer utilitários de display (`flex`, `grid`…).
+     Sem isso, `<div hidden class="flex">` continua visível — foi o que deixou a
+     confirmação do formulário à mostra antes de qualquer envio. */
+  [hidden] {
+    display: none !important;
+  }
+
   html {
     scroll-behavior: smooth;
     /* O header é fixo; sem isso a âncora para no meio do título. */
