@@ -7,6 +7,7 @@
  */
 import { seo, ambiente, dadosEstruturados } from "../data/seo";
 import { faq } from "../data/faq";
+import AvisoCookies from "../components/AvisoCookies.astro";
 import "../styles/global.css";
 import "../styles/imersao.css";
 import "../styles/manifesto.css";
@@ -142,19 +143,8 @@ const perguntasFrequentes = {
     }
 
     {
-      ambiente.ga && (
-        <>
-          <script
-            is:inline
-            async
-            src={`https://www.googletagmanager.com/gtag/js?id=${ambiente.ga}`}
-          />
-          <script
-            is:inline
-            set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ambiente.ga}');`}
-          />
-        </>
-      )
+      /* O Google Analytics não entra aqui: ele só é carregado depois do
+         consentimento do visitante, por AvisoCookies.astro. */
     }
   </head>
 
@@ -175,5 +165,7 @@ const perguntasFrequentes = {
     </a>
 
     <slot />
+
+    {ambiente.ga && <AvisoCookies />}
   </body>
 </html>

@@ -13,6 +13,8 @@ import Logo from "../components/Logo.astro";
 import Icone from "../components/Icone.astro";
 import { contato, temEmailReal, linkWhatsapp, mensagens } from "../data/contato";
 import { pilares } from "../data/pilares";
+import { ambiente } from "../data/seo";
+import { consentimento } from "../data/consentimento";
 
 const ano = new Date().getFullYear();
 
@@ -174,7 +176,20 @@ const navegacao = [
       class="mt-12 flex flex-col gap-3 border-t border-gray-0/15 pt-8 text-caption sm:flex-row sm:items-center sm:justify-between"
     >
       <p>© {ano} NeuroLab — {contato.assinatura}</p>
-      <p>CNPJ {contato.cnpj}</p>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+        {
+          ambiente.ga && (
+            <button
+              type="button"
+              data-abrir-consentimento
+              class="self-start rounded-sm text-caption transition-colors duration-rapida hover:text-gray-0"
+            >
+              {consentimento.preferencias}
+            </button>
+          )
+        }
+        <p>CNPJ {contato.cnpj}</p>
+      </div>
     </div>
   </div>
 </footer>

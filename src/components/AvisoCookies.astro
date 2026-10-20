@@ -1,0 +1,66 @@
+---
+/**
+ * Aviso de cookies (LGPD) e ponto de partida do Analytics.
+ *
+ * Só é renderizado quando PUBLIC_GA_ID existe (ver Base.astro). Aparece na
+ * primeira visita e some depois da escolha; o link "Preferências de cookies" do
+ * rodapé o reabre.
+ *
+ * "Permitir" e "Recusar" têm o mesmo peso visual de propósito: recusar precisa
+ * ser tão fácil quanto aceitar. E como o aviso surge na primeira dobra, onde o
+ * vermelho sólido já é do CTA do hero, nenhum dos dois usa a variante primária.
+ *
+ * Não é modal: não rouba o foco nem bloqueia a página. Fica acima do botão
+ * flutuante de WhatsApp (z-toast > z-sticky).
+ */
+import Botao from "./Botao.astro";
+import { consentimento } from "../data/consentimento";
+---
+
+<div
+  id="aviso-cookies"
+  hidden
+  role="region"
+  aria-labelledby="aviso-cookies-titulo"
+  class="fixed inset-x-4 bottom-4 z-toast rounded-md border border-borda bg-superficie p-5 shadow-lg sm:left-5 sm:right-auto sm:max-w-sm"
+>
+  <h2 id="aviso-cookies-titulo" class="text-h3 font-semibold text-gray-900">
+    {consentimento.titulo}
+  </h2>
+  <p class="mt-2 text-caption text-texto-secundario">{consentimento.texto}</p>
+  <div class="mt-4 grid grid-cols-2 gap-3">
+    <Botao variante="secundario" tamanho="md" data-consentimento="recusado">
+      {consentimento.recusar}
+    </Botao>
+    <Botao variante="secundario" tamanho="md" data-consentimento="aceito">
+      {consentimento.aceitar}
+    </Botao>
+  </div>
+</div>
+
+<script>
+  import { lerEscolha, registrarEscolha, ativarAnalytics, medirCliquesDeContato } from "../scripts/analytics";
+  import { contato } from "../data/contato";
+
+  const aviso = document.getElementById("aviso-cookies");
+
+  if (lerEscolha() === "aceito") ativarAnalytics();
+  else if (lerEscolha() === null && aviso) aviso.hidden = false;
+
+  medirCliquesDeContato(contato.agenda);
+
+  aviso?.querySelectorAll<HTMLButtonElement>("[data-consentimento]").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      registrarEscolha(botao.dataset.consentimento === "aceito" ? "aceito" : "recusado");
+      aviso.hidden = true;
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-abrir-consentimento]").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      if (!aviso) return;
+      aviso.hidden = false;
+      aviso.querySelector<HTMLButtonElement>("[data-consentimento]")?.focus();
+    });
+  });
+</script>

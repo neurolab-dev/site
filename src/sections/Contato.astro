@@ -294,7 +294,9 @@ const rotuloBase = "block text-caption font-semibold text-gray-800";
 </section>
 
 <script>
-  const form = document.getElementById("form-diagnostico") as HTMLFormElement | null;
+  import { rastrear } from "../scripts/analytics";
+
+  const form =document.getElementById("form-diagnostico") as HTMLFormElement | null;
   const sucesso = document.getElementById("form-sucesso");
   const erro = document.getElementById("form-erro");
   const enviar = document.getElementById("form-enviar") as HTMLButtonElement | null;
@@ -356,6 +358,9 @@ const rotuloBase = "block text-caption font-semibold text-gray-800";
         });
 
         if (!resposta.ok) throw new Error(`Resposta ${resposta.status}`);
+
+        // Só o desafio escolhido vai para o Analytics — nunca nome, telefone ou e-mail.
+        rastrear("generate_lead", { metodo: "formulario", desafio: String(dados.desafio) });
 
         form.hidden = true;
         sucesso.hidden = false;
