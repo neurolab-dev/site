@@ -38,29 +38,20 @@ os arquivos no design system, `npm run marca:sync` propaga tudo.
 
 | Item | O que fazer | O que muda |
 |---|---|---|
-| **Webhook do n8n** | Criar o fluxo com um nó Webhook (POST) e colar a URL em `PUBLIC_N8N_WEBHOOK_URL` | Sem isso o formulário não é renderizado — o bloco de contato mostra um aviso e cai para o WhatsApp |
 | **Cases e depoimentos** | Acrescentar objetos em [`src/data/cases.ts`](../src/data/cases.ts) | A seção e o link do menu aparecem sozinhos assim que houver o primeiro item |
 
-### Sobre o formato do payload do webhook
+### Sobre o formulário
 
-O formulário envia um JSON com estes campos:
+Os leads vão para o **Web3Forms**, que manda um e-mail por envio para o
+endereço da conta (plano gratuito). A chave de acesso fica em
+`PUBLIC_WEB3FORMS_KEY` na Vercel; ela é pública por natureza e só envia para o
+e-mail cadastrado. Para mudar o destinatário, troque o e-mail no painel do
+Web3Forms, não no código. Substituiu o webhook do n8n, abandonado para não pagar
+VPS.
 
-```json
-{
-  "nome": "", "empresa": "", "whatsapp": "", "email": "",
-  "desafio": "", "mensagem": "", "site": "",
-  "origem": "site", "pagina": "https://…", "enviadoEm": "2026-01-01T00:00:00.000Z"
-}
-```
-
-`site` é o campo honeypot — se vier preenchido, é robô, e o envio nem chega ao
-webhook. Se algum dia chegar preenchido, o filtro do lado do n8n deve descartar.
-
-O webhook precisa responder **2xx**. Qualquer outro status faz o site mostrar a
-mensagem de erro e reabilitar o botão. E o n8n precisa aceitar a origem do site
-via **CORS** — configure o nó Webhook para responder com
-`Access-Control-Allow-Origin` do domínio do site (ou `*` enquanto estiver
-testando), senão o navegador bloqueia o envio antes mesmo de sair.
+O campo `site` é o honeypot: se vier preenchido, é robô, e o site finge sucesso
+sem enviar nada. Se o Web3Forms responder com erro, o site mostra a mensagem de
+erro e reabilita o botão; o lead não se perde em silêncio.
 
 ### Sobre a agenda
 

@@ -5,8 +5,10 @@
  * WhatsApp e agenda resolvem quem já decidiu falar. O formulário existe para
  * quem prefere escrever, e para gerar um registro estruturado do lead.
  *
- * O envio vai para um webhook do n8n, definido em PUBLIC_N8N_WEBHOOK_URL. Sem
- * essa variável o formulário não é renderizado: no lugar dele entra um aviso e o
+ * O envio vai para o Web3Forms, que entrega cada lead por e-mail. A chave fica em
+ * PUBLIC_WEB3FORMS_KEY — ela é pública por natureza (o serviço foi feito para
+ * ficar no navegador) e só permite enviar para o e-mail da conta. Sem essa
+ * variável o formulário não é renderizado: no lugar dele entra um aviso e o
  * caminho do WhatsApp. Um formulário bonito que engole leads em silêncio é pior
  * que nenhum formulário.
  *
@@ -19,7 +21,7 @@ import { contato, temEmailReal, linkWhatsapp, mensagens } from "../data/contato"
 import { ambiente } from "../data/seo";
 import { pilares } from "../data/pilares";
 
-const temWebhook = Boolean(ambiente.webhook);
+const temDestino = Boolean(ambiente.web3forms);
 
 const canais = [
   {
@@ -79,7 +81,7 @@ const rotuloBase = "block text-caption font-semibold text-gray-800";
       <!-- Formulário -->
       <div class="min-w-0 rounded-md border border-borda bg-superficie p-6 md:p-8">
         {
-          temWebhook ? (
+          temDestino ? (
             <form id="form-diagnostico" novalidate class="flex flex-col gap-5">
               <h3 class="text-h2 font-semibold">Conte o seu desafio</h3>
 
@@ -300,9 +302,9 @@ const rotuloBase = "block text-caption font-semibold text-gray-800";
   const sucesso = document.getElementById("form-sucesso");
   const erro = document.getElementById("form-erro");
   const enviar = document.getElementById("form-enviar") as HTMLButtonElement | null;
-  const webhook = import.meta.env.PUBLIC_N8N_WEBHOOK_URL;
+  const chave = import.meta.env.PUBLIC_WEB3FORMS_KEY;
 
-  if (form && sucesso && erro && enviar && webhook) {
+  if (form && sucesso && erro && enviar && chave) {
     const mostrarErro = (texto: string) => {
       erro.textContent = texto;
       erro.hidden = false;
@@ -346,18 +348,28 @@ const rotuloBase = "block text-caption font-semibold text-gray-800";
       enviar.textContent = "Enviando…";
 
       try {
-        const resposta = await fetch(webhook, {
+        // As chaves viram os rótulos do e-mail que o Web3Forms entrega, por isso
+        // vão por extenso. `email` mantém o nome: é o campo que o serviço usa
+        // como "responder para".
+        const resposta = await fetch("https://api.web3forms.com/submit", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
           body: JSON.stringify({
-            ...dados,
-            origem: "site",
-            pagina: window.location.href,
-            enviadoEm: new Date().toISOString(),
+            access_key: chave,
+            subject: `Novo diagnóstico pelo site — ${dados.nome}`,
+            from_name: "Site NeuroLab",
+            Nome: dados.nome,
+            Empresa: dados.empresa || "—",
+            WhatsApp: dados.whatsapp,
+            email: dados.email || undefined,
+            "Principal desafio": dados.desafio,
+            Mensagem: dados.mensagem || "—",
+            Página: window.location.href,
           }),
         });
 
-        if (!resposta.ok) throw new Error(`Resposta ${resposta.status}`);
+        const resultado = await resposta.json().catch(() => null);
+        if (!resposta.ok || !resultado?.success) throw new Error(`Resposta ${resposta.status}`);
 
         // Só o desafio escolhido vai para o Analytics — nunca nome, telefone ou e-mail.
         rastrear("generate_lead", { metodo: "formulario", desafio: String(dados.desafio) });

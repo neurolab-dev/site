@@ -48,8 +48,8 @@ export const ambiente = {
   gtm: import.meta.env.PUBLIC_GTM_ID ?? "",
   /** Conteúdo da meta tag de verificação do Google Search Console. */
   searchConsole: import.meta.env.PUBLIC_SEARCH_CONSOLE ?? "",
-  /** Webhook do n8n que recebe os leads do formulário. */
-  webhook: import.meta.env.PUBLIC_N8N_WEBHOOK_URL ?? "",
+  /** Chave de acesso do Web3Forms, que entrega os leads do formulário por e-mail. */
+  web3forms: import.meta.env.PUBLIC_WEB3FORMS_KEY ?? "",
 } as const;
 
 /**

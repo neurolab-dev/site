@@ -140,7 +140,7 @@ entra na página. Ver `.env.example`.
 
 | Variável | Para quê |
 |---|---|
-| `PUBLIC_N8N_WEBHOOK_URL` | Destino dos leads do formulário. Sem ela, o formulário não é renderizado e o bloco de contato cai para o WhatsApp |
+| `PUBLIC_WEB3FORMS_KEY` | Chave do Web3Forms, que entrega os leads do formulário por e-mail. Sem ela, o formulário não é renderizado e o bloco de contato cai para o WhatsApp |
 | `PUBLIC_GA_ID` | Google Analytics 4 |
 | `PUBLIC_GTM_ID` | Google Tag Manager |
 | `PUBLIC_SEARCH_CONSOLE` | Meta tag de verificação do Search Console |
