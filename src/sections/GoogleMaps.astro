@@ -1,0 +1,57 @@
+---
+/**
+ * Chamada para a landing page de Google Maps.
+ *
+ * A oferta tem página própria (src/data/googlemaps.ts guarda o endereço). Aqui o
+ * botão é `secundario` de propósito: o primário da dobra é o do hero, e a regra
+ * de uma ação sólida vermelha por dobra vale também para quem rola até aqui.
+ * Abre em nova aba para o visitante não perder o ponto em que estava no site.
+ */
+import Botao from "../components/Botao.astro";
+import Icone from "../components/Icone.astro";
+import { googleMaps } from "../data/googlemaps";
+---
+
+<section id="google-maps" class="secao bg-fundo" aria-labelledby="titulo-google-maps">
+  <div class="container-conteudo">
+    <div
+      class="grid items-center gap-8 rounded-md border border-borda bg-superficie p-6 md:grid-cols-[1.3fr_1fr] md:gap-12 md:p-10"
+      data-revelar
+    >
+      <div>
+        <p class="mb-4 inline-flex items-center gap-2 text-caption font-semibold uppercase tracking-[0.18em] text-marca-texto">
+          <Icone nome="local" tamanho={16} />
+          {googleMaps.etiqueta}
+        </p>
+        <h2 id="titulo-google-maps" class="titulo-secao font-semibold">
+          {googleMaps.titulo}
+        </h2>
+        <p class="mt-5 text-body text-texto-secundario">{googleMaps.texto}</p>
+        <div class="mt-8">
+          <Botao
+            href={googleMaps.url}
+            variante="secundario"
+            tamanho="lg"
+            icone="seta-direita"
+            externo
+          >
+            {googleMaps.botao}
+          </Botao>
+        </div>
+      </div>
+
+      <ul class="flex flex-col gap-4" aria-label="O que a página apresenta">
+        {
+          googleMaps.sinais.map((sinal) => (
+            <li class="flex items-start gap-3 text-body text-texto">
+              <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-700">
+                <Icone nome="check" tamanho={14} />
+              </span>
+              {sinal}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
