@@ -44,6 +44,19 @@ Two data files drive conditional rendering rather than static content:
 - **`src/data/cases.ts`** starts as an empty array by design. `src/sections/Cases.astro` and the "Cases" link in `Header.astro` only render when the array is non-empty — there's no "coming soon" placeholder. Adding a case object makes both appear automatically.
 - **`contato.temEmailReal`** (derived from whether `contato.email` still starts with the placeholder `contato@exemplo`) gates whether the email address shows in the footer and contact section.
 
+Separately, **`src/data/googlemaps.ts`** holds the URL and copy of the `#google-maps` section (`GoogleMaps.astro`, between Serviços and Método). The Google Maps offer has its own landing page — an independent Astro project in `../4. LP Google Maps/`, published at `https://lp-google-maps.vercel.app/` with its own copy of tokens/brand (it does not sync with this repo). This site only links to it: a `secundario` button opening in a new tab (the hero keeps the single solid-red CTA). If the LP gets its own domain, change only `googleMaps.url`. Changes to the LP itself are made and deployed in that folder, not here.
+
+### Services carousel is scroll-driven (`Servicos.astro` + script in `index.astro` + `imersao.css`)
+
+The flip-card carousel in `#servicos` is moved by page scroll: the stage (`.container-conteudo`) is `position: sticky` below the fixed header while the vertical scroll translates the track horizontally. Non-obvious rules:
+
+- **Two modes, decided in JS (`configurar()`).** `palco` (scroll-driven, `data-scroll-horizontal="true"`) is the default on every viewport, mobile included. It falls back to `manual` only when the stage content is taller than its `min-height` even with cards at their minimum size (e.g. a phone in landscape). `manual` has native horizontal scroll plus an **autoplay** every 4.5s that pauses on hover/focus/touch/arrow click, while a card is flipped, when the carousel is off-screen, and never runs under `prefers-reduced-motion`.
+- **Stage height is CSS, not JS.** `--palco-altura = 100svh − --altura-header` (4rem mobile / 6rem ≥768px) sizes the sticky stage and, via `clamp()`, the card height. Use `svh`, not `vh`/`innerHeight`: mobile URL-bar show/hide must not resize the stage. For the same reason the resize handler ignores height-only changes.
+- **Section height = stage + travel.** `min-height: calc(var(--palco-altura) + var(--servicos-percurso))`; the travel is set by JS as `limite × RITMO` (`RITMO = 0.6`, in `index.astro`: lower = shorter scroll through the cards). Padding can't provide the travel — sticky is bounded by the parent's content box.
+- **The track moves with `transform: translate3d`** (GPU-composited, smoother on phones than `scrollLeft`), with a small lerp so stepped mouse wheels don't judder. Native `scrollLeft` is used only in `manual` mode.
+- **Short or narrow screens hide `.servicos-intro-texto`** (`max-width: 767px`, `max-height: 800px`) to leave room for the cards. Don't make that paragraph required content.
+- The previous version only enabled the pinned mode at ≥1024×700 and when everything fit, so laptops/zoomed screens and all phones got a purely manual carousel. Don't reintroduce a viewport-size gate; adjust card size instead.
+
 ### Design-system rules encoded in components, not just docs
 
 These aren't arbitrary style choices — they're the brand's documented rules (`../0. DesignSystem/02-cores.md`, `05-componentes-ui.md`), and violating them is treated as a bug:

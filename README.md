@@ -36,6 +36,7 @@ conteúdo editável está em `src/data/`:
 | `contato.ts` | WhatsApp, e-mail, endereço, CNPJ, agenda, redes sociais e as mensagens pré-escritas do WhatsApp |
 | `pilares.ts` | Os quatro pilares de serviço |
 | `servicos.ts` | A grade de serviços concretos |
+| `googlemaps.ts` | Endereço e texto da chamada para a landing page de Google Maps (projeto à parte) |
 | `problemas.ts` | As dores da seção de abertura |
 | `metodo.ts` | As quatro etapas do método |
 | `faq.ts` | Perguntas frequentes (alimentam também o rich result do Google) |
