@@ -83,44 +83,99 @@ import WhatsappFlutuante from "../components/WhatsappFlutuante.astro";
     document.querySelectorAll<HTMLElement>("[data-carrossel]").forEach(carrossel => {
       const secao = carrossel.closest<HTMLElement>("section");
       const palco = secao?.querySelector<HTMLElement>(".container-conteudo");
-      if (!secao || !palco) return;
+      const trilha = carrossel.querySelector<HTMLElement>(".servicos-trilha");
+      if (!secao || !palco || !trilha) return;
+
+      /*
+        Dois modos. "palco": o palco fica fixo na tela e a rolagem da página desloca
+        a trilha (transform, que é composto pela GPU — mais fluido no celular do que
+        mexer em scrollLeft). "manual": só se nem com os cards no tamanho mínimo o
+        conteúdo cabe na janela (celular deitado, janela muito baixa); aí o carrossel
+        anda sozinho a cada poucos segundos, com as setas e o toque como alternativa.
+      */
+      type Modo = "palco" | "manual";
+      let modo: Modo = "manual";
+
+      /** Quanto a página rola para cada px que a trilha anda: < 1 deixa o percurso mais curto. */
+      const RITMO = 0.6;
+      const INTERVALO_AUTO = 4500;
 
       const passo = () => Math.min(carrossel.clientWidth * 0.82, 420);
-      const limite = () => Math.max(0, carrossel.scrollWidth - carrossel.clientWidth);
-      const inicio = () => secao.getBoundingClientRect().top + window.scrollY;
-      const percurso = () => Math.max(1, secao.offsetHeight - window.innerHeight);
-      const anterior = document.querySelector<HTMLButtonElement>("[data-carrossel-anterior]");
-      const proximo = document.querySelector<HTMLButtonElement>("[data-carrossel-proximo]");
+      const margemDireita = () => parseFloat(getComputedStyle(carrossel).paddingRight) || 0;
+      /** Deslocamento até o último card alinhar com a borda direita do conteúdo. */
+      const limiteDoPalco = () => Math.max(0, trilha.offsetWidth - (carrossel.clientWidth - margemDireita()));
+      const limiteNativo = () => Math.max(0, carrossel.scrollWidth - carrossel.clientWidth);
+      const limitar = (valor: number, maximo: number) => Math.max(0, Math.min(maximo, valor));
 
+      const anterior = secao.querySelector<HTMLButtonElement>("[data-carrossel-anterior]");
+      const proximo = secao.querySelector<HTMLButtonElement>("[data-carrossel-proximo]");
+
+      let total = 0;
+      let percurso = 1;
+      let topoDoPalco = 0;
+      let alvo = 0;
+      let atual = 0;
       let quadro = 0;
-      const sincronizar = () => {
+
+      // Aproxima `atual` de `alvo` a cada quadro: a rodinha do mouse anda em degraus,
+      // e sem isso o carrossel andaria aos trancos. Sem movimento reduzido.
+      const pintar = () => {
         quadro = 0;
-        if (secao.dataset.scrollHorizontal !== "true") return;
-        const progresso = Math.max(0, Math.min(1, (window.scrollY - inicio()) / percurso()));
-        carrossel.scrollLeft = progresso * limite();
+        const falta = alvo - atual;
+        atual = reduzMovimento || Math.abs(falta) < 0.5 ? alvo : atual + falta * 0.18;
+        trilha.style.transform = `translate3d(${-atual}px,0,0)`;
+        if (atual !== alvo) quadro = requestAnimationFrame(pintar);
       };
-      const agendar = () => {
-        if (!quadro) quadro = requestAnimationFrame(sincronizar);
+
+      const sincronizar = (imediato = false) => {
+        if (modo !== "palco") return;
+        const progresso = limitar((topoDoPalco - secao.getBoundingClientRect().top) / percurso, 1);
+        alvo = progresso * total;
+        if (imediato) atual = alvo;
+        if (!quadro) quadro = requestAnimationFrame(pintar);
       };
-      const configurar = () => {
+
+      const desligarPalco = () => {
+        modo = "manual";
         secao.dataset.scrollHorizontal = "false";
         secao.style.removeProperty("--servicos-percurso");
-        if (window.innerWidth < 1024 || window.innerHeight < 700 || !limite()) return;
-
-        secao.dataset.scrollHorizontal = "true";
-        secao.style.setProperty("--servicos-percurso", `${limite()}px`);
-        if (palco.getBoundingClientRect().height + 80 > window.innerHeight) {
-          secao.dataset.scrollHorizontal = "false";
-          secao.style.removeProperty("--servicos-percurso");
-          return;
-        }
-        sincronizar();
+        trilha.style.transform = "";
+        alvo = atual = 0;
       };
 
+      const configurar = () => {
+        desligarPalco();
+        total = limiteDoPalco();
+        if (total <= 0) return;
+
+        percurso = Math.max(1, total * RITMO);
+        secao.dataset.scrollHorizontal = "true";
+        secao.style.setProperty("--servicos-percurso", `${percurso}px`);
+
+        // O palco tem altura mínima fixa; se o conteúdo passa dela, o título seria
+        // cortado pelo cabeçalho. Volta ao modo manual em vez de esconder texto.
+        const minimo = parseFloat(getComputedStyle(palco).minHeight) || 0;
+        if (palco.offsetHeight - minimo > 1) {
+          desligarPalco();
+          return;
+        }
+        modo = "palco";
+        topoDoPalco = parseFloat(getComputedStyle(palco).top) || 0;
+        sincronizar(true);
+      };
+
+      // Pausa o autoplay enquanto a pessoa interage, e retoma sozinho depois.
+      let pausadoAte = 0;
+      let emFoco = false;
+      let visivel = false;
+      const pausarPor = (ms: number) => { pausadoAte = Date.now() + ms; };
+
       const navegar = (direcao: number) => {
-        if (secao.dataset.scrollHorizontal === "true") {
-          const destino = Math.max(0, Math.min(limite(), carrossel.scrollLeft + direcao * passo()));
-          window.scrollTo({ top: inicio() + (destino / limite()) * percurso(), behavior: reduzMovimento ? "instant" : "smooth" });
+        pausarPor(8000);
+        if (modo === "palco") {
+          const destino = limitar(alvo + direcao * passo(), total);
+          const inicioDoPalco = window.scrollY + secao.getBoundingClientRect().top - topoDoPalco;
+          window.scrollTo({ top: inicioDoPalco + (destino / total) * percurso, behavior: reduzMovimento ? "instant" : "smooth" });
         } else {
           carrossel.scrollBy({ left: direcao * passo(), behavior: reduzMovimento ? "instant" : "smooth" });
         }
@@ -128,8 +183,37 @@ import WhatsappFlutuante from "../components/WhatsappFlutuante.astro";
       anterior?.addEventListener("click", () => navegar(-1));
       proximo?.addEventListener("click", () => navegar(1));
 
-      window.addEventListener("scroll", agendar, { passive: true });
-      window.addEventListener("resize", configurar, { passive: true });
+      carrossel.addEventListener("pointerenter", (evento) => { if (evento.pointerType === "mouse") emFoco = true; });
+      carrossel.addEventListener("pointerleave", (evento) => { if (evento.pointerType === "mouse") emFoco = false; });
+      carrossel.addEventListener("focusin", () => { emFoco = true; });
+      carrossel.addEventListener("focusout", () => { emFoco = false; });
+      carrossel.addEventListener("touchstart", () => pausarPor(8000), { passive: true });
+
+      if ("IntersectionObserver" in window) {
+        // Observa a janela dos cards, não a seção: a seção pode ser mais alta que a tela.
+        new IntersectionObserver(([entrada]) => { visivel = entrada.isIntersecting; }, { threshold: 0.3 }).observe(carrossel);
+      }
+
+      // Só no modo manual, e nunca com movimento reduzido ou com um card virado
+      // (quem está lendo o verso não quer que ele saia de cena).
+      if (!reduzMovimento) {
+        window.setInterval(() => {
+          if (modo !== "manual" || !visivel || emFoco || document.hidden || Date.now() < pausadoAte) return;
+          if (secao.querySelector('[aria-expanded="true"]')) return;
+          const fim = carrossel.scrollLeft >= limiteNativo() - 4;
+          carrossel.scrollTo({ left: fim ? 0 : carrossel.scrollLeft + passo(), behavior: "smooth" });
+        }, INTERVALO_AUTO);
+      }
+
+      window.addEventListener("scroll", () => sincronizar(), { passive: true });
+      // No celular a barra de endereço esconde e aparece durante a rolagem e dispara
+      // `resize` só com a altura mudando; o palco usa svh e não precisa recalcular.
+      let largura = window.innerWidth;
+      window.addEventListener("resize", () => {
+        if (window.innerWidth === largura) return;
+        largura = window.innerWidth;
+        configurar();
+      }, { passive: true });
       configurar();
     });
   </script>
